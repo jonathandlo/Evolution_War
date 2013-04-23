@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>Axiom.Framework</id>
+    <version>0.8.3376.12322</version>
+    <title>Axiom.Framework</title>
+    <authors>Axiom Project Team</authors>
+    <owners>Axiom Project Team</owners>
+    <licenseUrl>http://axiom3d.net/wiki/index.php/License.txt</licenseUrl>
+    <projectUrl>http://axiom3d.net/</projectUrl>
+    <iconUrl>http://axiom3d.net/images/logos_axiom/axiomlogo_small.png</iconUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>Axiom.Framework</description>
+    <releaseNotes />
+    <copyright />
+    <language />
+    <tags>3D DirectX XNA OpenGL Mono MacOS Android iOS iPhone iPad WindowsPhone7 Linux</tags>
+    <dependencies>
+      <dependency id="Axiom" version="0.8.3376.12322" />
+    </dependencies>
+    <references>
+      <reference file="Axiom.Framework.dll" />
+      <reference file="ICSharpCode.SharpZipLib.dll" />
+    </references>
+  </metadata>
+</package>

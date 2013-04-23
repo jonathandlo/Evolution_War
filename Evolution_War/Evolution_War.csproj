@@ -36,8 +36,21 @@
     <Reference Include="Axiom">
       <HintPath>..\packages\Axiom.0.8.3376.12322\lib\net35\Axiom.dll</HintPath>
     </Reference>
-    <Reference Include="ICSharpCode.SharpZipLib">
-      <HintPath>..\packages\Axiom.0.8.3376.12322\lib\net35\ICSharpCode.SharpZipLib.dll</HintPath>
+    <Reference Include="Axiom.Framework">
+      <HintPath>..\packages\Axiom.Framework.0.8.3376.12322\lib\net35\Axiom.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="Axiom.Platforms.Win32">
+      <HintPath>..\packages\Axiom.Platforms.Win32.0.8.3376.12322\lib\net35\Axiom.Platforms.Win32.dll</HintPath>
+    </Reference>
+    <Reference Include="Axiom.Plugins.ParticleFX">
+      <HintPath>..\packages\Axiom.Plugins.ParticleFX.0.8.3376.12322\lib\net35\Axiom.Plugins.ParticleFX.dll</HintPath>
+    </Reference>
+    <Reference Include="Axiom.RenderSystems.DirectX9">
+      <HintPath>..\packages\Axiom.RenderSystems.DirectX9.0.8.3376.12322\lib\net35\Axiom.RenderSystems.DirectX9.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.84.0.0, Culture=neutral, PublicKeyToken=1b03e6acf1164f73">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Axiom.Framework.0.8.3376.12322\lib\net35\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
