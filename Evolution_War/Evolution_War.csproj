@@ -51,9 +51,21 @@
     <Reference Include="Axiom.RenderSystems.DirectX9">
       <HintPath>..\packages\Axiom.RenderSystems.DirectX9.0.8.3376.12322\lib\net35\Axiom.RenderSystems.DirectX9.dll</HintPath>
     </Reference>
+    <Reference Include="Common.Logging, Version=2.0.0.4042, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Libraries\Common.Logging.dll</HintPath>
+    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.84.0.0, Culture=neutral, PublicKeyToken=1b03e6acf1164f73">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Axiom.Framework.0.8.3376.12322\lib\net35\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpInputSystem.Core, Version=0.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Libraries\SharpInputSystem.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpInputSystem.DirectX, Version=0.4.0.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Libraries\SharpInputSystem.DirectX.dll</HintPath>
     </Reference>
     <Reference Include="SlimDX, Version=4.0.13.43, Culture=neutral, PublicKeyToken=b1b0c32fd1ffe4f9, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
@@ -68,8 +80,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Base Class Reference\AxiomEnvironment.cs" />
+    <Compile Include="Base Class Reference\Game.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="Game.cs" />
+    <Compile Include="Program\Game.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -85,6 +99,9 @@
       <Link>zlib1.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Libraries\Common.Logging.dll" />
+    <Content Include="Libraries\SharpInputSystem.Core.dll" />
+    <Content Include="Libraries\SharpInputSystem.DirectX.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
