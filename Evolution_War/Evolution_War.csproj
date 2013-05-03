@@ -45,6 +45,9 @@
     <Reference Include="Axiom.Platforms.Win32">
       <HintPath>..\packages\Axiom.Platforms.Win32.0.8.3376.12322\lib\net35\Axiom.Platforms.Win32.dll</HintPath>
     </Reference>
+    <Reference Include="Axiom.Plugins.DevILCodecs">
+      <HintPath>..\packages\Axiom.Plugins.DevILCodecs.0.8.3376.12322\lib\net35\Axiom.Plugins.DevILCodecs.dll</HintPath>
+    </Reference>
     <Reference Include="Axiom.Plugins.ParticleFX">
       <HintPath>..\packages\Axiom.Plugins.ParticleFX.0.8.3376.12322\lib\net35\Axiom.Plugins.ParticleFX.dll</HintPath>
     </Reference>
@@ -81,9 +84,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Base Class Reference\AxiomEnvironment.cs" />
-    <Compile Include="Base Class Reference\Game.cs" />
-    <Compile Include="Program.cs" />
     <Compile Include="Program\Game.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -97,6 +99,18 @@
     </Content>
     <Content Include="..\packages\Axiom.0.8.3376.12322\native\x86\zlib1.dll">
       <Link>zlib1.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\packages\Axiom.Plugins.DevILCodecs.0.8.3376.12322\native\x86\devil.dll">
+      <Link>devil.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\packages\Axiom.Plugins.DevILCodecs.0.8.3376.12322\native\x86\ilu.dll">
+      <Link>ilu.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\packages\Axiom.Plugins.DevILCodecs.0.8.3376.12322\native\x86\ilut.dll">
+      <Link>ilut.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Libraries\Common.Logging.dll" />
