@@ -1,5 +1,4 @@
 bin
 obj
 *.suo
-
-Evolution_War.sln.DotSettings.user
+*.user
