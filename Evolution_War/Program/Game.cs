@@ -56,6 +56,7 @@ namespace Evolution_War
 			WindowEventMonitor.Instance.RegisterListener(Window, this);
 
 			// Content
+			ResourceGroupManager.Instance.AddResourceLocation("Meshes", "Folder", true);
 			ResourceGroupManager.Instance.InitializeAllResourceGroups();
 
 			// Scene Manager
@@ -67,14 +68,14 @@ namespace Evolution_War
 		{
 			// Camera
 			Camera = SceneManager.CreateCamera("MainCamera");
-			Camera.Position = new Vector3(0, 0, 500);
-			Camera.LookAt(new Vector3(0, 0, -300));
+			Camera.Position = new Vector3(0, 0, 10);
+			Camera.LookAt(new Vector3(0, 0, 0));
 			Camera.Near = 5;
 			Camera.AutoAspectRatio = true;
 
 			// Viewport
 			Viewport = Window.AddViewport(Camera, 0, 0, 1.0f, 1.0f, 100);
-			Viewport.BackgroundColor = ColorEx.SteelBlue;
+			Viewport.BackgroundColor = ColorEx.Black;
 		}
 
 		public void InitializeInput()
@@ -97,7 +98,20 @@ namespace Evolution_War
 
 		public void CreateScene()
 		{
-			
+			SceneManager.AmbientLight = ColorEx.Black;
+			SceneManager.DefaultMaterialSettings.ShadingMode = Shading.Gouraud;
+
+			var light = SceneManager.CreateLight("spotLight");
+			light.Type = LightType.Directional;
+			light.Diffuse = ColorEx.White;
+			light.Specular = ColorEx.Yellow;
+			light.Direction = new Vector3(0, -0.5, -1);
+
+			var ent = SceneManager.CreateEntity("ship", "ship_assault_1.mesh");
+			var node = SceneManager.RootSceneNode.CreateChildSceneNode("ship");
+			node.Position = new Vector3(0, 0, 0);
+			ent.DisplaySkeleton = true;
+			node.AttachObject(ent);
 		}
 
 		public void Update(float timeSinceLastFrame)

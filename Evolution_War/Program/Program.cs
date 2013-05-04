@@ -9,15 +9,15 @@ namespace Evolution_War
 	{
 		private static void Main()
 		{
-			try
-			{
+//			try
+//			{
 				System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US", false);
 				(new Game()).Run();
-			}
-			catch (Exception ex)
-			{
-				System.Diagnostics.Debug.WriteLine(Axiom.Core.LogManager.BuildExceptionString(ex));
-			}
+//			}
+//			catch (Exception ex)
+//			{
+//				System.Diagnostics.Debug.WriteLine(Axiom.Core.LogManager.BuildExceptionString(ex));
+//			}
 		}
 	}
 }

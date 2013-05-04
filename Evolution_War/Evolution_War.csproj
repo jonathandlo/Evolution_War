@@ -48,15 +48,27 @@
     <Reference Include="Axiom.Plugins.DevILCodecs">
       <HintPath>..\packages\Axiom.Plugins.DevILCodecs.0.8.3376.12322\lib\net35\Axiom.Plugins.DevILCodecs.dll</HintPath>
     </Reference>
+    <Reference Include="Axiom.Plugins.FreeImageCodecs">
+      <HintPath>..\packages\Axiom.Plugins.FreeImageCodecs.0.8.3376.12322\lib\net35\Axiom.Plugins.FreeImageCodecs.dll</HintPath>
+    </Reference>
     <Reference Include="Axiom.Plugins.ParticleFX">
       <HintPath>..\packages\Axiom.Plugins.ParticleFX.0.8.3376.12322\lib\net35\Axiom.Plugins.ParticleFX.dll</HintPath>
+    </Reference>
+    <Reference Include="Axiom.Plugins.SystemDrawingCodecs">
+      <HintPath>..\packages\Axiom.Plugins.SystemDrawingCodecs.0.8.3376.12322\lib\net35\Axiom.Plugins.SystemDrawingCodecs.dll</HintPath>
     </Reference>
     <Reference Include="Axiom.RenderSystems.DirectX9">
       <HintPath>..\packages\Axiom.RenderSystems.DirectX9.0.8.3376.12322\lib\net35\Axiom.RenderSystems.DirectX9.dll</HintPath>
     </Reference>
+    <Reference Include="Axiom.SceneManagers.Octree">
+      <HintPath>..\packages\Axiom.SceneManagers.Octree.0.8.3376.12322\lib\net35\Axiom.SceneManagers.Octree.dll</HintPath>
+    </Reference>
     <Reference Include="Common.Logging, Version=2.0.0.4042, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Libraries\Common.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="FreeImageNet">
+      <HintPath>..\packages\Axiom.Plugins.FreeImageCodecs.0.8.3376.12322\lib\net35\FreeImageNet.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.84.0.0, Culture=neutral, PublicKeyToken=1b03e6acf1164f73">
       <SpecificVersion>False</SpecificVersion>
@@ -83,13 +95,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Base Class Reference\AxiomEnvironment.cs" />
     <Compile Include="Program\Game.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="Program\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <Content Include="..\packages\Axiom.Plugins.FreeImageCodecs.0.8.3376.12322\native\x86\freeimage.dll">
+      <Link>freeimage.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Meshes\ship_assault_1.material">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Meshes\ship_assault_1.mesh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -116,6 +137,12 @@
     <Content Include="Libraries\Common.Logging.dll" />
     <Content Include="Libraries\SharpInputSystem.Core.dll" />
     <Content Include="Libraries\SharpInputSystem.DirectX.dll" />
+    <Content Include="Meshes\texture.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
