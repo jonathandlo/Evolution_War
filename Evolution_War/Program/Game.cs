@@ -1,46 +1,32 @@
 using System;
+using System.Diagnostics;
 using System.Linq;
+using System.Windows.Forms;
 using Axiom.Core;
-using Axiom.Framework.Configuration;
+using Config = Axiom.Framework.Configuration;
 using Axiom.Graphics;
-using Vector3 = Axiom.Math.Vector3;
+using Axiom.Math;
 
 namespace Evolution_War
 {
 	public class Game : IDisposable, IWindowEventListener
 	{
 		protected Root Engine;
-		protected IConfigurationManager ConfigurationManager;
+		protected Config.IConfigurationManager ConfigurationManager;
 		protected ResourceGroupManager Content;
 		protected SceneManager SceneManager;
 		protected Camera Camera;
 		protected Viewport Viewport;
 		protected RenderWindow Window;
-		protected Axiom.Graphics.RenderSystem RenderSystem;
-		protected SharpInputSystem.InputManager InputManager;
-		protected SharpInputSystem.Mouse mouse;
-		protected SharpInputSystem.Keyboard keyboard;
-
-		public void Run()
-		{
-			InitializeSystem();
-			InitializeScene();
-			//InitializeInput();
-
-			CreateScene();
-			Engine.StartRendering();
-		}
-
-		private void Engine_FrameRenderingQueued(object source, FrameEventArgs e)
-		{
-			Update(e.TimeSinceLastFrame);
-		}
+		protected RenderSystem RenderSystem;
 
 		public void InitializeSystem()
 		{
-			ConfigurationManager = new DefaultConfigurationManager();
+			ConfigurationManager = new Config.DefaultConfigurationManager();
 			Engine = new Root(ConfigurationManager.LogFilename);
+			Engine.FrameStarted += EngineOnFrameStarted;
 			Engine.FrameRenderingQueued += Engine_FrameRenderingQueued;
+			Engine.FrameEnded += EngineOnFrameEnded;
 
 			// Load Config
 			ConfigurationManager.RestoreConfiguration(Engine);
@@ -68,7 +54,7 @@ namespace Evolution_War
 		{
 			// Camera
 			Camera = SceneManager.CreateCamera("MainCamera");
-			Camera.Position = new Vector3(0, 0, 10);
+			Camera.Position = new Vector3(0, 0, 16);
 			Camera.LookAt(new Vector3(0, 0, 0));
 			Camera.Near = 5;
 			Camera.AutoAspectRatio = true;
@@ -78,46 +64,71 @@ namespace Evolution_War
 			Viewport.BackgroundColor = ColorEx.Black;
 		}
 
-		public void InitializeInput()
-		{
-			SharpInputSystem.ParameterList pl = new SharpInputSystem.ParameterList();
-			pl.Add(new SharpInputSystem.Parameter("WINDOW", Window["WINDOW"]));
-
-			if (RenderSystem.Name.Contains("DirectX"))
-			{
-				//Default mode is foreground exclusive..but, we want to show mouse - so nonexclusive
-				pl.Add(new SharpInputSystem.Parameter("w32_mouse", "CLF_BACKGROUND"));
-				pl.Add(new SharpInputSystem.Parameter("w32_mouse", "CLF_NONEXCLUSIVE"));
-			}
-
-			//This never returns null.. it will raise an exception on errors
-			InputManager = SharpInputSystem.InputManager.CreateInputSystem(pl);
-			//mouse = InputManager.CreateInputObject<SharpInputSystem.Mouse>( true, "" );
-			//keyboard = InputManager.CreateInputObject<SharpInputSystem.Keyboard>( true, "" );
-		}
-
 		public void CreateScene()
 		{
 			SceneManager.AmbientLight = ColorEx.Black;
 			SceneManager.DefaultMaterialSettings.ShadingMode = Shading.Gouraud;
 
+			// Spot Lighting
 			var light = SceneManager.CreateLight("spotLight");
-			light.Type = LightType.Directional;
+			light.Type = LightType.Spotlight;
 			light.Diffuse = ColorEx.White;
 			light.Specular = ColorEx.Yellow;
-			light.Direction = new Vector3(0, -0.5, -1);
+			light.Position = new Vector3(0, 0, 15);
+			light.Direction = new Vector3(0, 0, -1);
+			light.SetSpotlightRange(30.0f, 90.0f);
 
+			// Create Player Ship
 			var ent = SceneManager.CreateEntity("ship", "ship_assault_1.mesh");
 			var node = SceneManager.RootSceneNode.CreateChildSceneNode("ship");
 			node.Position = new Vector3(0, 0, 0);
+			node.Rotate(new Vector3(1, 0, 0), 90.0f);
 			ent.DisplaySkeleton = true;
 			node.AttachObject(ent);
 		}
 
-		public void Update(float timeSinceLastFrame)
+		public void Run()
 		{
+			InitializeSystem();
+			InitializeScene();
+
+			CreateScene();
+			Engine.StartRendering();
+		}
+
+		private void EngineOnFrameStarted(object sender, FrameEventArgs frameEventArgs)
+		{
+
+		}
+
+		private void Engine_FrameRenderingQueued(object source, FrameEventArgs e)
+		{
+			var dist = e.TimeSinceLastFrame * 10;
+			var x = (Input.getKey(Keys.Left) ? -1 : 0) + (Input.getKey(Keys.Right) ? 1 : 0);
+			int y = (Input.getKey(Keys.Down) ? -1 : 0) + (Input.getKey(Keys.Up) ? 1 : 0);
+
+			SceneManager.GetSceneNode("ship").Translate(new Vector3(x * dist, y * dist, 0));
 			
 		}
+
+		private void EngineOnFrameEnded(object sender, FrameEventArgs frameEventArgs)
+		{
+
+		}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 		#region IDisposable Implementation
 
@@ -172,8 +183,8 @@ namespace Evolution_War
 
 		#region IWindowEventListener Implementation
 
-		public void WindowMoved(RenderWindow rw) {}
-		public void WindowResized(RenderWindow rw) {}
+		public void WindowMoved(RenderWindow rw) { }
+		public void WindowResized(RenderWindow rw) { }
 		public void WindowClosed(RenderWindow rw)
 		{
 			// Only do this for the Main Window
@@ -182,7 +193,7 @@ namespace Evolution_War
 				Root.Instance.QueueEndRendering();
 			}
 		}
-		public void WindowFocusChange(RenderWindow rw) {}
+		public void WindowFocusChange(RenderWindow rw) { }
 
 		#endregion
 	}

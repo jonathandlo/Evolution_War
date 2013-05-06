@@ -74,20 +74,13 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Axiom.Framework.0.8.3376.12322\lib\net35\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
-    <Reference Include="SharpInputSystem.Core, Version=0.4.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Libraries\SharpInputSystem.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpInputSystem.DirectX, Version=0.4.0.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Libraries\SharpInputSystem.DirectX.dll</HintPath>
-    </Reference>
     <Reference Include="SlimDX, Version=4.0.13.43, Culture=neutral, PublicKeyToken=b1b0c32fd1ffe4f9, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\SlimDX.4.0.13.43\lib\NET40\SlimDX.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -96,6 +89,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program\Game.cs" />
+    <Compile Include="Program\Input.cs" />
     <Compile Include="Program\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -134,14 +128,12 @@
       <Link>ilut.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Libraries\Common.Logging.dll" />
-    <Content Include="Libraries\SharpInputSystem.Core.dll" />
-    <Content Include="Libraries\SharpInputSystem.DirectX.dll" />
     <Content Include="Meshes\texture.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Libraries\" />
     <Folder Include="Models\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
