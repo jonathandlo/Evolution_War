@@ -15,7 +15,7 @@ namespace Evolution_War
 
 		public static Boolean getKey(Keys pKey)
 		{
-			return Convert.ToBoolean(GetAsyncKeyState(pKey));
+			return GetAsyncKeyState(pKey) < 0;
 		}
 	}
 }
