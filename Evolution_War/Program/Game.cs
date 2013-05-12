@@ -28,13 +28,15 @@ namespace Evolution_War
 		protected Double TicksToMilliFactor;
 		protected Double TicksToPhysicsStepPercentFactor;
 
+		//Game Setup
+		protected Ship PlayerShip;
+		protected PlayerController PlayerInput;
+
 		public void InitializeSystem()
 		{
 			ConfigurationManager = new Config.DefaultConfigurationManager();
 			Engine = new Root(ConfigurationManager.LogFilename);
-			Engine.FrameStarted += EngineOnFrameStarted;
 			Engine.FrameRenderingQueued += Engine_FrameRenderingQueued;
-			Engine.FrameEnded += EngineOnFrameEnded;
 
 			// Load Config
 			ConfigurationManager.RestoreConfiguration(Engine);
@@ -56,6 +58,9 @@ namespace Evolution_War
 			// Scene Manager
 			SceneManager = Engine.CreateSceneManager("DefaultSceneManager", "GameSMInstance");
 			SceneManager.ClearScene();
+
+			// Player Input
+			PlayerInput = new PlayerController();
 		}
 
 		public void InitializeScene()
@@ -101,6 +106,7 @@ namespace Evolution_War
 			node.Rotate(new Vector3(1, 0, 0), 90.0f);
 			ent.DisplaySkeleton = true;
 			node.AttachObject(ent);
+			PlayerShip = new Ship(node);
 		}
 
 		public void Run()
@@ -112,87 +118,22 @@ namespace Evolution_War
 			Engine.StartRendering();
 		}
 
-		private void EngineOnFrameStarted(object sender, FrameEventArgs frameEventArgs)
-		{
-
-		}
-
-		private double x, y, ox, oy; // positions
-		private double dx, dy, odx, ody; // speeds
-		private double a, oa; // angles (degrees)
-		private double da, oda; // angular speeds
-
 		private void Engine_FrameRenderingQueued(object source, FrameEventArgs e) // Gameloop, called during every render. CPU is free during render.
 		{
-			var ticksAhead = Stopwatch.ElapsedTicks - LastPhysicsStepTicks; // tickAhead goes from 0 to PhysicsDelayTicks
+			var ticksAhead = Stopwatch.ElapsedTicks - LastPhysicsStepTicks; // ticksAhead goes from 0 to PhysicsDelayTicks
 
-			if (ticksAhead < PhysicsDelayTicks) // continue to draw until the next physics step
+			if (ticksAhead < PhysicsDelayTicks) // continue to draw as fast as possible
 			{
 				var percent = ticksAhead * TicksToPhysicsStepPercentFactor;
-				var ship = SceneManager.GetSceneNode("ship");
-
-				ship.Position = new Vector3(Methods.CubicStep(ox, odx, x, dx, percent), Methods.CubicStep(oy, ody, y, dy, percent), 0);
-				ship.Orientation = Quaternion.FromEulerAnglesInDegrees(90.0, 0.0, 0.0);
-				ship.Rotate(Quaternion.FromEulerAnglesInDegrees(0.0, - 16 * Methods.LinearStep(oda, da, percent), 0.0), TransformSpace.World);
-				ship.Rotate(Quaternion.FromEulerAnglesInDegrees(0.0, 0.0, Methods.CubicStep(oa, oda, a, da, percent) - 90.0f), TransformSpace.World);
-
+				PlayerShip.Draw(percent);
 			}
 			else // compute the next physics step
 			{
 				LastPhysicsStepTicks += PhysicsDelayTicks;
-
-				// position and angle memory
-				ox = x;
-				oy = y;
-				odx = dx;
-				ody = dy;
-				oa = a;
-				oda = da;
-
-				// thrust
-				dx += 0.1 * Math.Cos(a * Methods.DegreesToRadians) * (Input.getKey(Keys.Up) ? 1 : 0);
-				dy += 0.1 * Math.Sin(a * Methods.DegreesToRadians) * (Input.getKey(Keys.Up) ? 1 : 0);
-				da += 0.8 * ((Input.getKey(Keys.Right) ? -1 : 0) + (Input.getKey(Keys.Left) ? 1 : 0));
-
-				// dynamic friction
-				dx *= (1 - 0.04) - (Input.getKey(Keys.Down) ? 0.1 : 0);
-				dy *= (1 - 0.04) - (Input.getKey(Keys.Down) ? 0.1 : 0);
-				da *= (1 - 0.16) - (Input.getKey(Keys.Down) ? 0.1 : 0);
-
-				// static friction
-				dx -= dx > 0 ? Math.Min(0.01, Math.Abs(dx)) * Math.Sign(dx) : 0;
-				dy -= dy > 0 ? Math.Min(0.01, Math.Abs(dy)) * Math.Sign(dy) : 0;
-				da -= da > 0 ? Math.Min(0.01, Math.Abs(da)) * Math.Sign(da) : 0;
-
-				// advance position
-				x += dx;
-				y += dy;
-				oa = a % 360 + oa - a;
-				a = a % 360 + da;
-
-				Debug.WriteLine(oa.ToString("F3") + "+" + oda.ToString("F3") + "      " + a.ToString("F3") + "+" + da.ToString("F3"));
+				PlayerShip.Loop(PlayerInput);
 			}
 
 		}
-
-		private void EngineOnFrameEnded(object sender, FrameEventArgs frameEventArgs)
-		{
-
-		}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 		#region IDisposable Implementation
 

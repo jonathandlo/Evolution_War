@@ -92,6 +92,7 @@
     <Compile Include="Program\Input.cs" />
     <Compile Include="Program\Methods.cs" />
     <Compile Include="Program\Program.cs" />
+    <Compile Include="Program\Ship.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
