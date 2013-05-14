@@ -27,31 +27,15 @@ namespace Evolution_War
 		public Boolean Right;
 		public Boolean X;
 		public Boolean Z;
-	}
 
-	public abstract class Controller
-	{
-		protected InputStates inputStates;
-		public InputStates InputStates { get { return inputStates; } }
-
-		public Controller()
+		public void Add(InputStates pOther)
 		{
-			inputStates = new InputStates();
-		}
-
-		public abstract void Loop(); // updates the input states for external access
-	}
-
-	public class PlayerController : Controller
-	{
-		public override void Loop()
-		{
-			inputStates.Up = Input.GetKey(Keys.Up);
-			inputStates.Down = Input.GetKey(Keys.Down);
-			inputStates.Left = Input.GetKey(Keys.Left);
-			inputStates.Right = Input.GetKey(Keys.Right);
-			inputStates.X = Input.GetKey(Keys.X);
-			inputStates.Z = Input.GetKey(Keys.Z);
+			Up = Up || pOther.Up;
+			Down = Down || pOther.Down;
+			Left = Left || pOther.Left;
+			Right = Right || pOther.Right;
+			X = X || pOther.X;
+			Z = Z || pOther.Z;
 		}
 	}
 }

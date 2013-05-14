@@ -15,20 +15,38 @@ namespace Evolution_War
 	{
 		public SceneNode node { get; private set; }
 
-		private double x, y, ox, oy; // positions
-		private double dx, dy, odx, ody; // speeds
-		private double a, oa; // angles (degrees)
-		private double da, oda; // angular speeds
+		private Controller controller;
+		private Double x, y, ox, oy; // positions
+		private Double dx, dy, odx, ody; // speeds
+		private Double a, oa; // angles (degrees)
+		private Double da, oda; // angular speeds
 
-		public Ship(SceneNode pNode)
+		public Vector2 Position
 		{
-			node = pNode;
+			get { return new Vector2(x, y); }
+		}
+		public Vector2 Velocity
+		{
+			get { return new Vector2(dx, dy); }
+		}
+		public Double Angle
+		{
+			get { return a; }
 		}
 
-		public void Loop(Controller pController)
+		public Ship(SceneNode pNode, Controller pController)
+		{
+			node = pNode;
+			controller = pController;
+
+			x = ox = pNode.Position.x;
+			y = oy = pNode.Position.y;
+		}
+
+		public void Loop(World pWorld)
 		{
 			// update input
-			pController.Loop();
+			controller.Loop(this, pWorld);
 
 			// position and angle memory
 			ox = x;
@@ -39,14 +57,14 @@ namespace Evolution_War
 			oda = da;
 
 			// thrust
-			dx += 0.1 * Math.Cos(a * Methods.DegreesToRadians) * (pController.InputStates.Up ? 1 : 0);
-			dy += 0.1 * Math.Sin(a * Methods.DegreesToRadians) * (pController.InputStates.Up ? 1 : 0);
-			da += 0.8 * ((pController.InputStates.Right ? -1 : 0) + (pController.InputStates.Left ? 1 : 0));
+			dx += 0.1 * Math.Cos(a * Methods.DegreesToRadians) * (controller.InputStates.Up ? 1 : 0);
+			dy += 0.1 * Math.Sin(a * Methods.DegreesToRadians) * (controller.InputStates.Up ? 1 : 0);
+			da += 0.8 * ((controller.InputStates.Right ? -1 : 0) + (controller.InputStates.Left ? 1 : 0));
 
 			// dynamic friction
-			dx *= (1 - 0.04) - (pController.InputStates.Down ? 0.1 : 0);
-			dy *= (1 - 0.04) - (pController.InputStates.Down ? 0.1 : 0);
-			da *= (1 - 0.16) - (pController.InputStates.Down ? 0.1 : 0);
+			dx *= (1 - 0.04) - (controller.InputStates.Down ? 0.1 : 0);
+			dy *= (1 - 0.04) - (controller.InputStates.Down ? 0.1 : 0);
+			da *= (1 - 0.16) - (controller.InputStates.Down ? 0.1 : 0);
 
 			// static friction
 			dx -= dx > 0 ? Math.Min(0.01, Math.Abs(dx)) * Math.Sign(dx) : 0;
@@ -60,7 +78,7 @@ namespace Evolution_War
 			a = a % 360 + da;
 		}
 
-		public void Draw(double pPercent)
+		public void Draw(Double pPercent)
 		{
 			node.Position = new Vector3(Methods.CubicStep(ox, odx, x, dx, pPercent), Methods.CubicStep(oy, ody, y, dy, pPercent), 0);
 			node.Orientation = Quaternion.FromEulerAnglesInDegrees(90.0, 0.0, 0.0);

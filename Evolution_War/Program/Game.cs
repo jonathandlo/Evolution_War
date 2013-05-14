@@ -28,9 +28,8 @@ namespace Evolution_War
 		protected Double TicksToMilliFactor;
 		protected Double TicksToPhysicsStepPercentFactor;
 
-		//Game Setup
-		protected Ship PlayerShip;
-		protected PlayerController PlayerInput;
+		// Game World
+		protected World World;
 
 		public void InitializeSystem()
 		{
@@ -58,16 +57,13 @@ namespace Evolution_War
 			// Scene Manager
 			SceneManager = Engine.CreateSceneManager("DefaultSceneManager", "GameSMInstance");
 			SceneManager.ClearScene();
-
-			// Player Input
-			PlayerInput = new PlayerController();
 		}
 
 		public void InitializeScene()
 		{
 			// Camera
 			Camera = SceneManager.CreateCamera("MainCamera");
-			Camera.Position = new Vector3(0, -4, 128);
+			Camera.Position = new Vector3(0, -4, 256);
 			Camera.LookAt(new Vector3(0, 0, 0));
 			Camera.Near = 5;
 			Camera.AutoAspectRatio = true;
@@ -82,14 +78,19 @@ namespace Evolution_War
 			SceneManager.AmbientLight = ColorEx.Black;
 			SceneManager.DefaultMaterialSettings.ShadingMode = Shading.Gouraud;
 
-			// Spot Lighting
+			// Lighting
 			var light = SceneManager.CreateLight("spotLight");
 			light.Type = LightType.Spotlight;
 			light.Diffuse = ColorEx.White;
 			light.Specular = ColorEx.Yellow;
-			light.Position = new Vector3(0, 0, 128);
+			light.Position = new Vector3(0, 0, 256);
 			light.Direction = new Vector3(0, 0, -1);
 			light.SetSpotlightRange(5.0f, 90.0f, 8.0f);
+
+			var sunLight = SceneManager.CreateLight("sunLight");
+			sunLight.Type = LightType.Directional;
+			sunLight.Diffuse = new ColorEx(0.13f, 0.1f, 0.0f);
+			sunLight.Direction = new Vector3(1, -1, -4);
 
 			// Start the Stopwatch
 			Stopwatch = new Stopwatch();
@@ -99,14 +100,24 @@ namespace Evolution_War
 			TicksToPhysicsStepPercentFactor = 1.0 / PhysicsDelayTicks;
 			LastPhysicsStepTicks = 0.0;
 
+			// Create the World
+			World = new World();
+
 			// Create Player Ship
 			var ent = SceneManager.CreateEntity("ship", "ship_assault_1.mesh");
 			var node = SceneManager.RootSceneNode.CreateChildSceneNode("ship");
 			node.Position = new Vector3(0, 0, 0);
 			node.Rotate(new Vector3(1, 0, 0), 90.0f);
-			ent.DisplaySkeleton = true;
 			node.AttachObject(ent);
-			PlayerShip = new Ship(node);
+			World.PlayerShip = new Ship(node, new PlayerController());
+
+			// Create an AI Ship
+			var ent2 = SceneManager.CreateEntity("ship2", "ship_assault_1.mesh");
+			var node2 = SceneManager.RootSceneNode.CreateChildSceneNode("ship2");
+			node2.Position = new Vector3(0, -16, 0);
+			node2.Rotate(new Vector3(1, 0, 0), 90.0f);
+			node2.AttachObject(ent2);
+			World.AIShip = new Ship(node2, new FollowController());
 		}
 
 		public void Run()
@@ -125,12 +136,12 @@ namespace Evolution_War
 			if (ticksAhead < PhysicsDelayTicks) // continue to draw as fast as possible
 			{
 				var percent = ticksAhead * TicksToPhysicsStepPercentFactor;
-				PlayerShip.Draw(percent);
+				World.Draw(percent);
 			}
 			else // compute the next physics step
 			{
 				LastPhysicsStepTicks += PhysicsDelayTicks;
-				PlayerShip.Loop(PlayerInput);
+				World.Loop();
 			}
 
 		}
