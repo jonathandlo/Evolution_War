@@ -33,5 +33,10 @@ namespace Evolution_War
 		{
 			return new Vector2(Math.Cos(pAngleRadians), Math.Sin(pAngleRadians));
 		}
+
+        public static double AngleDifference(double pFirstAngle, double pSecondAngle) {
+            var diffmod = (pFirstAngle - pSecondAngle + 180) % 360;
+            return diffmod + (diffmod < 0 ? 360 : 0) - 180;
+        }
 	}
 }

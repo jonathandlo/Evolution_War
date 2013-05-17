@@ -12,11 +12,7 @@ namespace Evolution_War
 	{
 		[DllImport("user32.dll")]
 		private static extern short GetAsyncKeyState(Keys pKey);
-
-		public static Boolean GetKey(Keys pKey)
-		{
-			return GetAsyncKeyState(pKey) < 0;
-		}
+		public static Boolean GetKey(Keys pKey){ return GetAsyncKeyState(pKey) < 0; }
 	}
 
 	public struct InputStates
@@ -37,5 +33,15 @@ namespace Evolution_War
 			X = X || pOther.X;
 			Z = Z || pOther.Z;
 		}
+
+        public void Clear()
+        {
+            Up = false;
+            Down = false;
+            Left = false;
+            Right = false;
+            X = false;
+            Z = false;
+        }
 	}
 }

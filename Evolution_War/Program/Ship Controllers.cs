@@ -8,13 +8,7 @@ namespace Evolution_War
 {
 	public abstract class Controller
 	{
-		protected InputStates inputStates;
-		public InputStates InputStates { get { return inputStates; } }
-
-		public Controller()
-		{
-			inputStates = new InputStates();
-		}
+		public InputStates InputStates = new InputStates(); // determines what keys the AI will press after every Loop()
 
 		public abstract void Loop(Ship pShip, World pWorld); // updates the input states for external access
 	}
@@ -23,91 +17,74 @@ namespace Evolution_War
 	{
 		public override void Loop(Ship pShip, World pWorld)
 		{
-			inputStates.Up = Input.GetKey(Keys.Up);
-			inputStates.Down = Input.GetKey(Keys.Down);
-			inputStates.Left = Input.GetKey(Keys.Left);
-			inputStates.Right = Input.GetKey(Keys.Right);
-			inputStates.X = Input.GetKey(Keys.X);
-			inputStates.Z = Input.GetKey(Keys.Z);
+			InputStates.Up = Input.GetKey(Keys.Up);
+			InputStates.Down = Input.GetKey(Keys.Down);
+			InputStates.Left = Input.GetKey(Keys.Left);
+			InputStates.Right = Input.GetKey(Keys.Right);
+			InputStates.X = Input.GetKey(Keys.X);
+			InputStates.Z = Input.GetKey(Keys.Z);
 		}
 	}
 
-	public class FollowController : Controller
+	public abstract class BaseWaypointController : Controller
 	{
-		private List<Vector2> Targets;
+		protected List<Vector2> Targets = new List<Vector2>();
 
-		public FollowController()
-		{
-			Targets = new List<Vector2>();
-		}
-
-		public override void Loop(Ship pShip, World pWorld)
-		{
-			if (Targets.Count == 0 || (pWorld.PlayerShip.Position - Targets[Targets.Count - 1]).Length > 8)
-			{
-				Debug.WriteLine("     AI : Tracking Added");
-				Targets.Add(pWorld.PlayerShip.Position);
-			}
-
-			inputStates = MoveToNextTarget(pShip);
-		}
-		private InputStates MoveToNextTarget(Ship pShip)
+		protected InputStates MoveToNextTarget(Ship pShip)
 		{
 			var state = new InputStates();
 
-			if (Targets.Count > 0)
+			if (Targets.Count > 0) 
 			{
 				var nextTarget = Targets[0];
-				var vectorToTarget = nextTarget - pShip.Position;
-				var vectorToFacing = Methods.AngleToVector(pShip.Angle * Methods.DegreesToRadians); // may need to average with velocity vector for improved navigation
-				var vectorAlong = Methods.Projection(vectorToFacing, vectorToTarget);
-				var vectorAside = vectorToTarget - vectorAlong;
+				var vectorToTarget = nextTarget - pShip.Position; // direction to target
+				var vectorToFacing = pShip.Velocity + 2 * Methods.AngleToVector(pShip.Angle * Methods.DegreesToRadians); // ship's velocity plus a little bit of it's rotation
+				var vectorAlong = Methods.Projection(vectorToFacing, vectorToTarget); // the part of the facing vector that is in line with the target (how close we are to pointing to the target)
+				var vectorAside = vectorToTarget - vectorAlong; // the part of the facing vector that is looking to the side of the target (how close we are to looking 90 degrees away from the target)
 
-				if (vectorToTarget.Dot(vectorToFacing) > 0 || vectorToTarget.Length > 64) // the ship is facing its target || far enough away
-				{
-					Debug.WriteLine("     AI : Up - " + vectorToTarget.Length.ToString());
-
-					if (vectorToFacing.Perpendicular.Dot(vectorToTarget) < 0) // target is to the left
-					{
-						state.Left = true;
-					}
-					else
-					{
-						state.Right = true;
-					}
-
-					if (vectorAside.Length < vectorAlong.Length) // thrust if target is in frontal cone
-					{
-						state.Up = true;
-					}
-				}
-				else // to prevent orbit, fly away first
-				{
-					Debug.WriteLine("     AI : Turn");
+				if (vectorAside.Length < vectorAlong.Length && vectorToTarget.Dot(vectorToFacing) > 0) // generally facing target
 					state.Up = true;
 
-					if (vectorToFacing.Perpendicular.Dot(vectorToTarget) > 0) // target is to the left
-					{
+				if (vectorAside.Length * 8 > vectorAlong.Length || vectorToTarget.Dot(vectorToFacing) < 0) // accurately facing target
+				{
+					if (vectorToFacing.Perpendicular.Dot(vectorToTarget) < 0) // target is to the left
 						state.Left = true;
-					}
 					else
-					{
 						state.Right = true;
-					}
 				}
 
-				if ((nextTarget - pShip.Position).Length < 32)
+				if ((nextTarget - pShip.Position).Length < (Targets.Count > 1 ? 32 : 16)) // are we there yet? more lenient if there are more waypoints to come
 				{
 					Debug.WriteLine("     AI : Waypoint Reached");
 					Targets.RemoveAt(0);
 				}
 			}
-			else
-			{
-				state.Down = true;
-			}
 
 			return state;
+		}
+	}
+
+	public class FollowController : BaseWaypointController
+	{
+		public override void Loop(Ship pShip, World pWorld)
+		{
+			InputStates.Clear();
+
+			Debug.WriteLine("angle between: " + Methods.AngleDifference(pShip.Angle, pWorld.PlayerShip.Angle));
+			Debug.WriteLine("targets: " + Targets.Count + " : distance : " + (pWorld.PlayerShip.Position - pShip.Position).Length.ToString());
+
+			if ((pWorld.PlayerShip.Position - pShip.Position).Length > 32) // chase the player ship if it gets too far
+			{
+				Targets.Clear();
+				Targets.Add(pWorld.PlayerShip.Position);
+			}
+			else if (Targets.Count == 0) // face the same way as the player ship once you reach it
+			{
+				InputStates.Left = Methods.AngleDifference(pShip.Angle, pWorld.PlayerShip.Angle) < -15;
+				InputStates.Right = Methods.AngleDifference(pShip.Angle, pWorld.PlayerShip.Angle) > 15;
+			}
+
+			InputStates.Add(MoveToNextTarget(pShip));
 		}
 	}
 
