@@ -90,6 +90,7 @@
   <ItemGroup>
     <Compile Include="Program\Game.cs" />
     <Compile Include="Program\Input.cs" />
+    <Compile Include="Program\Level.cs" />
     <Compile Include="Program\Methods.cs" />
     <Compile Include="Program\Program.cs" />
     <Compile Include="Program\Ship Controllers.cs" />
@@ -103,10 +104,19 @@
       <Link>freeimage.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Meshes\grid.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Meshes\ship_assault_1.material">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Meshes\ship_assault_1.mesh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Meshes\grid.mesh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Meshes\gridMaterial.material">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="packages.config" />
@@ -137,7 +147,6 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Libraries\" />
     <Folder Include="Models\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
