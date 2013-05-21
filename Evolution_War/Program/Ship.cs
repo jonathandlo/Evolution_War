@@ -13,13 +13,13 @@ namespace Evolution_War
 {
 	public class Ship
 	{
-		public SceneNode node { get; private set; }
+		public SceneNode Node { get; private set; }
 
 		private Controller controller;
-		private Double x, y, ox, oy; // positions
-		private Double dx, dy, odx, ody; // speeds
-		private Double a, oa; // angles (degrees)
-		private Double da, oda; // angular speeds
+		private Double x, y, ox, oy; // position
+		private Double dx, dy, odx, ody; // velocity
+		private Double a, oa; // angle (degrees)
+		private Double da, oda; // angular velocity
 
 		public Vector2 Position
 		{
@@ -36,7 +36,7 @@ namespace Evolution_War
 
 		public Ship(SceneNode pNode, Controller pController)
 		{
-			node = pNode;
+			Node = pNode;
 			controller = pController;
 
 			x = ox = pNode.Position.x;
@@ -80,10 +80,10 @@ namespace Evolution_War
 
 		public void Draw(Double pPercent)
 		{
-			node.Position = new Vector3(Methods.CubicStep(ox, odx, x, dx, pPercent), Methods.CubicStep(oy, ody, y, dy, pPercent), 0);
-			node.Orientation = Quaternion.FromEulerAnglesInDegrees(90.0, 0.0, 0.0);
-			node.Rotate(Quaternion.FromEulerAnglesInDegrees(0.0, -16 * Methods.LinearStep(oda, da, pPercent), 0.0), TransformSpace.World);
-			node.Rotate(Quaternion.FromEulerAnglesInDegrees(0.0, 0.0, Methods.CubicStep(oa, oda, a, da, pPercent) - 90.0f), TransformSpace.World);
+			Node.Position = new Vector3(Methods.CubicStep(ox, odx, x, dx, pPercent), Methods.CubicStep(oy, ody, y, dy, pPercent), 0);
+			Node.Orientation = Quaternion.FromEulerAnglesInDegrees(90.0, 0.0, 0.0);
+			Node.Rotate(Quaternion.FromEulerAnglesInDegrees(0.0, -16 * Methods.LinearStep(oda, da, pPercent), 0.0), TransformSpace.World);
+			Node.Rotate(Quaternion.FromEulerAnglesInDegrees(0.0, 0.0, Methods.CubicStep(oa, oda, a, da, pPercent) - 90.0f), TransformSpace.World);
 		}
 	}
 }

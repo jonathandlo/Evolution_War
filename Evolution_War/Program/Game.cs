@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
 using Axiom.Core;
+using Axiom.Media;
 using Config = Axiom.Framework.Configuration;
 using Axiom.Graphics;
 using Axiom.Math;
@@ -14,9 +15,9 @@ namespace Evolution_War
 		// Axiom Setup
 		protected Root Engine;
 		protected Config.IConfigurationManager ConfigurationManager;
-		protected ResourceGroupManager Content;
 		protected SceneManager SceneManager;
 		protected Camera Camera;
+		protected Light Spotlight;
 		protected Viewport Viewport;
 		protected RenderWindow Window;
 		protected RenderSystem RenderSystem;
@@ -29,7 +30,7 @@ namespace Evolution_War
 		protected Double TicksToPhysicsStepPercentFactor;
 
 		// Game World
-		protected World World;
+		protected World World { get; private set; }
 
 		public void InitializeSystem()
 		{
@@ -63,7 +64,7 @@ namespace Evolution_War
 		{
 			// Camera
 			Camera = SceneManager.CreateCamera("MainCamera");
-			Camera.Position = new Vector3(0, -4, 256);
+			Camera.Position = new Vector3(0, -16, 256);
 			Camera.LookAt(new Vector3(0, 0, 0));
 			Camera.Near = 5;
 			Camera.AutoAspectRatio = true;
@@ -79,18 +80,21 @@ namespace Evolution_War
 			SceneManager.DefaultMaterialSettings.ShadingMode = Shading.Gouraud;
 
 			// Lighting
-			var light = SceneManager.CreateLight("spotLight");
-			light.Type = LightType.Spotlight;
-			light.Diffuse = ColorEx.White;
-			light.Specular = ColorEx.Yellow;
-			light.Position = new Vector3(0, 0, 256);
-			light.Direction = new Vector3(0, 0, -1);
-			light.SetSpotlightRange(5.0f, 90.0f, 8.0f);
+			Spotlight = SceneManager.CreateLight("spotLight");
+
+			Spotlight.Type = LightType.Spotlight;
+			Spotlight.Diffuse = ColorEx.White;
+			Spotlight.Specular = ColorEx.Yellow;
+			Spotlight.Position = new Vector3(0, 0, 256);
+			Spotlight.Direction = new Vector3(0, 0, -1);
+			Spotlight.SetSpotlightRange(5.0f, 90.0f, 8.0f);
 
 			var sunLight = SceneManager.CreateLight("sunLight");
 			sunLight.Type = LightType.Directional;
-			sunLight.Diffuse = new ColorEx(0.13f, 0.1f, 0.0f);
-			sunLight.Direction = new Vector3(1, -1, -4);
+			sunLight.Diffuse = new ColorEx(0.13f, 0.1f, 0.05f);
+			sunLight.Direction = new Vector3(1, -1, -2);
+
+			SceneManager.AmbientLight = new ColorEx(0.13f, 0.1f, 0.05f);
 
 			// Start the Stopwatch
 			Stopwatch = new Stopwatch();
@@ -103,6 +107,14 @@ namespace Evolution_War
 			// Create the World
 			World = new World();
 
+			// Create the Level Grid
+			var grid = SceneManager.CreateEntity("grid", "grid.mesh");
+			var gridnode = SceneManager.RootSceneNode.CreateChildSceneNode("grid");
+			gridnode.Position = new Vector3(0, 0, -10);
+			gridnode.Rotate(new Vector3(1, 0, 0), 90.0f);
+			gridnode.Scale = new Vector3(600, 1, 600);
+			gridnode.AttachObject(grid);
+
 			// Create Player Ship
 			var ent = SceneManager.CreateEntity("ship", "ship_assault_1.mesh");
 			var node = SceneManager.RootSceneNode.CreateChildSceneNode("ship");
@@ -111,13 +123,16 @@ namespace Evolution_War
 			node.AttachObject(ent);
 			World.PlayerShip = new Ship(node, new PlayerController());
 
-			// Create an AI Ship
-			var ent2 = SceneManager.CreateEntity("ship2", "ship_assault_1.mesh");
-			var node2 = SceneManager.RootSceneNode.CreateChildSceneNode("ship2");
-			node2.Position = new Vector3(0, -16, 0);
-			node2.Rotate(new Vector3(1, 0, 0), 90.0f);
-			node2.AttachObject(ent2);
-			World.AIShip = new Ship(node2, new FollowController());
+			// Create a AI Ships
+			for (int i = 0; i < 10; i++)
+			{
+				var ent2 = SceneManager.CreateEntity("ship" + (i + 2), "ship_assault_1.mesh");
+				var node2 = SceneManager.RootSceneNode.CreateChildSceneNode("ship" + (i + 2));
+				node2.Position = new Vector3(0, -16, 0);
+				node2.Rotate(new Vector3(1, 0, 0), 90.0f);
+				node2.AttachObject(ent2);
+				World.AddShip(new Ship(node2, new FollowController(i == 0 ? World.PlayerShip : World.Ships[i - 1])));
+			}
 		}
 
 		public void Run()
@@ -137,11 +152,13 @@ namespace Evolution_War
 			{
 				var percent = ticksAhead * TicksToPhysicsStepPercentFactor;
 				World.Draw(percent);
+				Camera.LookAt(World.PlayerShip.Node.Position);
+				Spotlight.Position = World.PlayerShip.Node.Position + new Vector3(0, 0, 256);
 			}
 			else // compute the next physics step
 			{
 				LastPhysicsStepTicks += PhysicsDelayTicks;
-				World.Loop();
+				World.Loop(World);
 			}
 
 		}
