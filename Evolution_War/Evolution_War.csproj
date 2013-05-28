@@ -88,6 +88,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Program\MultiLights.cs" />
+    <Compile Include="Program\SmoothCamera.cs" />
     <Compile Include="Program\Game.cs" />
     <Compile Include="Program\Input.cs" />
     <Compile Include="Program\Level.cs" />

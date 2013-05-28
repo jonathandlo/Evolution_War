@@ -55,7 +55,7 @@ namespace Evolution_War
 
 				if ((nextTarget - pShip.Position).Length < (Targets.Count > 1 ? 32 : 16)) // are we there yet? more lenient if there are more waypoints to come
 				{
-					Debug.WriteLine("     AI: Waypoint Reached");
+					// Debug.WriteLine("     AI: Waypoint Reached");
 					Targets.RemoveAt(0);
 				}
 			}
@@ -77,8 +77,8 @@ namespace Evolution_War
 		{
 			InputStates.Clear();
 
-			Debug.WriteLine("angle between: " + Methods.AngleDifference(pShip.Angle, TargetShip.Angle));
-			Debug.WriteLine("targets: " + Targets.Count + " distance: " + (TargetShip.Position - pShip.Position).Length.ToString());
+//			Debug.WriteLine("angle between: " + Methods.AngleDifference(pShip.Angle, TargetShip.Angle));
+//			Debug.WriteLine("targets: " + Targets.Count + " distance: " + (TargetShip.Position - pShip.Position).Length.ToString());
 
 			if ((TargetShip.Position - pShip.Position).Length > 32) // chase the player ship if it gets too far
 			{

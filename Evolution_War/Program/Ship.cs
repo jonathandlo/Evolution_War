@@ -21,18 +21,11 @@ namespace Evolution_War
 		private Double a, oa; // angle (degrees)
 		private Double da, oda; // angular velocity
 
-		public Vector2 Position
-		{
-			get { return new Vector2(x, y); }
-		}
-		public Vector2 Velocity
-		{
-			get { return new Vector2(dx, dy); }
-		}
-		public Double Angle
-		{
-			get { return a; }
-		}
+		public Vector2 Position { get { return new Vector2(x, y); } }
+		public Vector2 OldPosition { get { return new Vector2(ox, oy); } }
+		public Vector2 Velocity { get { return new Vector2(dx, dy); } }
+		public Vector2 OldVelocity { get { return new Vector2(odx, ody); } }
+		public Double Angle { get { return a; } }
 
 		public Ship(SceneNode pNode, Controller pController)
 		{
@@ -71,6 +64,13 @@ namespace Evolution_War
 			dy -= dy > 0 ? Math.Min(0.01, Math.Abs(dy)) * Math.Sign(dy) : 0;
 			da -= da > 0 ? Math.Min(0.01, Math.Abs(da)) * Math.Sign(da) : 0;
 
+			// wall collision
+
+			if (x + dx > pWorld.Level.Right) dx = -Math.Abs(dx);
+			else if (x + dx < pWorld.Level.Left) dx = Math.Abs(dx);
+			if (y + dy > pWorld.Level.Bottom) dy = -Math.Abs(dy);
+			else if (y + dy < pWorld.Level.Top) dy = Math.Abs(dy);
+
 			// advance position
 			x += dx;
 			y += dy;
@@ -81,9 +81,9 @@ namespace Evolution_War
 		public void Draw(Double pPercent)
 		{
 			Node.Position = new Vector3(Methods.CubicStep(ox, odx, x, dx, pPercent), Methods.CubicStep(oy, ody, y, dy, pPercent), 0);
-			Node.Orientation = Quaternion.FromEulerAnglesInDegrees(90.0, 0.0, 0.0);
-			Node.Rotate(Quaternion.FromEulerAnglesInDegrees(0.0, -16 * Methods.LinearStep(oda, da, pPercent), 0.0), TransformSpace.World);
-			Node.Rotate(Quaternion.FromEulerAnglesInDegrees(0.0, 0.0, Methods.CubicStep(oa, oda, a, da, pPercent) - 90.0f), TransformSpace.World);
+			Node.Orientation =
+				Quaternion.FromAngleAxis(Methods.CubicStep(oa, oda, a, da, pPercent) * Methods.DegreesToRadians, Vector3.UnitZ) *
+				Quaternion.FromEulerAnglesInDegrees(-16 * Methods.LinearStep(oda, da, pPercent), 0.0, 0.0);
 		}
 	}
 }

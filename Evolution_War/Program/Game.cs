@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
+using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Media;
 using Config = Axiom.Framework.Configuration;
@@ -13,154 +14,145 @@ namespace Evolution_War
 	public class Game : IDisposable, IWindowEventListener
 	{
 		// Axiom Setup
-		protected Root Engine;
-		protected Config.IConfigurationManager ConfigurationManager;
-		protected SceneManager SceneManager;
-		protected Camera Camera;
-		protected Light Spotlight;
-		protected Viewport Viewport;
-		protected RenderWindow Window;
-		protected RenderSystem RenderSystem;
+		private Root root;
+		private Config.IConfigurationManager configManager;
+		private SceneManager sceneManager;
+		private Viewport viewport;
+		private RenderWindow window;
+		private RenderSystem renderSystem;
 
 		// Timer Setup
-		protected Stopwatch Stopwatch;
-		protected Double LastPhysicsStepTicks;
-		protected Double PhysicsDelayTicks;
-		protected Double TicksToMilliFactor;
-		protected Double TicksToPhysicsStepPercentFactor;
+		private Stopwatch stopwatch;
+		private Double lastPhysicsStepTicks;
+		private Double physicsDelayTicks;
+		private Double ticksToMilliFactor;
+		private Double ticksToPhysicsStepPercentFactor;
 
 		// Game World
-		protected World World { get; private set; }
+		public World World { get; private set; }
+		private SmoothCamera camera;
+		private MultiLights multiLights;
 
 		public void InitializeSystem()
 		{
-			ConfigurationManager = new Config.DefaultConfigurationManager();
-			Engine = new Root(ConfigurationManager.LogFilename);
-			Engine.FrameRenderingQueued += Engine_FrameRenderingQueued;
+			configManager = new Config.DefaultConfigurationManager();
+			root = new Root(configManager.LogFilename);
+			root.FrameRenderingQueued += RootFrameRenderingQueued;
 
 			// Load Config
-			ConfigurationManager.RestoreConfiguration(Engine);
+			configManager.RestoreConfiguration(root);
 
 			// Render System
-			if (Engine.RenderSystem == null)
-				RenderSystem = Engine.RenderSystem = Engine.RenderSystems.First().Value;
+			if (root.RenderSystem == null)
+				renderSystem = root.RenderSystem = root.RenderSystems.First().Value;
 			else
-				RenderSystem = Engine.RenderSystem;
+				renderSystem = root.RenderSystem;
 
 			// Render Window
-			Window = Root.Instance.Initialize(true, "Axiom Framework Window");
-			WindowEventMonitor.Instance.RegisterListener(Window, this);
+			var parameterList = new NamedParameterList
+			{
+				{"vsync", "true"},
+				{"Anti aliasing", "None"},
+				{"FSAA", 2},
+				{"colorDepth", 32},
+				{"border", "fixed"}
+			};
+
+			Root.Instance.Initialize(false);
+			window = Root.Instance.CreateRenderWindow("EvolutionWarWindow", 1280, 1024, false, parameterList);
+			WindowEventMonitor.Instance.RegisterListener(window, this);
 
 			// Content
 			ResourceGroupManager.Instance.AddResourceLocation("Meshes", "Folder", true);
 			ResourceGroupManager.Instance.InitializeAllResourceGroups();
 
 			// Scene Manager
-			SceneManager = Engine.CreateSceneManager("DefaultSceneManager", "GameSMInstance");
-			SceneManager.ClearScene();
+			sceneManager = root.CreateSceneManager("DefaultSceneManager", "GameSMInstance");
+			sceneManager.ClearScene();
 		}
 
 		public void InitializeScene()
 		{
-			// Camera
-			Camera = SceneManager.CreateCamera("MainCamera");
-			Camera.Position = new Vector3(0, -16, 256);
-			Camera.LookAt(new Vector3(0, 0, 0));
-			Camera.Near = 5;
-			Camera.AutoAspectRatio = true;
-
-			// Viewport
-			Viewport = Window.AddViewport(Camera, 0, 0, 1.0f, 1.0f, 100);
-			Viewport.BackgroundColor = ColorEx.Black;
-		}
-
-		public void CreateScene()
-		{
-			SceneManager.AmbientLight = ColorEx.Black;
-			SceneManager.DefaultMaterialSettings.ShadingMode = Shading.Gouraud;
-
-			// Lighting
-			Spotlight = SceneManager.CreateLight("spotLight");
-
-			Spotlight.Type = LightType.Spotlight;
-			Spotlight.Diffuse = ColorEx.White;
-			Spotlight.Specular = ColorEx.Yellow;
-			Spotlight.Position = new Vector3(0, 0, 256);
-			Spotlight.Direction = new Vector3(0, 0, -1);
-			Spotlight.SetSpotlightRange(5.0f, 90.0f, 8.0f);
-
-			var sunLight = SceneManager.CreateLight("sunLight");
-			sunLight.Type = LightType.Directional;
-			sunLight.Diffuse = new ColorEx(0.13f, 0.1f, 0.05f);
-			sunLight.Direction = new Vector3(1, -1, -2);
-
-			SceneManager.AmbientLight = new ColorEx(0.13f, 0.1f, 0.05f);
-
 			// Start the Stopwatch
-			Stopwatch = new Stopwatch();
-			Stopwatch.Start();
-			PhysicsDelayTicks = Stopwatch.Frequency / 30.0; // 30 physics steps per second
-			TicksToMilliFactor = 1.0 / (Stopwatch.Frequency / 1000.0);
-			TicksToPhysicsStepPercentFactor = 1.0 / PhysicsDelayTicks;
-			LastPhysicsStepTicks = 0.0;
+			stopwatch = new Stopwatch();
+			stopwatch.Start();
+			physicsDelayTicks = Stopwatch.Frequency / 30.0; // 30 physics steps per second
+			ticksToMilliFactor = 1.0 / (Stopwatch.Frequency / 1000.0);
+			ticksToPhysicsStepPercentFactor = 1.0 / physicsDelayTicks;
+			lastPhysicsStepTicks = 0.0;
 
 			// Create the World
 			World = new World();
 
 			// Create the Level Grid
-			var grid = SceneManager.CreateEntity("grid", "grid.mesh");
-			var gridnode = SceneManager.RootSceneNode.CreateChildSceneNode("grid");
-			gridnode.Position = new Vector3(0, 0, -10);
-			gridnode.Rotate(new Vector3(1, 0, 0), 90.0f);
-			gridnode.Scale = new Vector3(600, 1, 600);
-			gridnode.AttachObject(grid);
+			World.Level = new Level(sceneManager, 500, 4);
 
 			// Create Player Ship
-			var ent = SceneManager.CreateEntity("ship", "ship_assault_1.mesh");
-			var node = SceneManager.RootSceneNode.CreateChildSceneNode("ship");
-			node.Position = new Vector3(0, 0, 0);
-			node.Rotate(new Vector3(1, 0, 0), 90.0f);
-			node.AttachObject(ent);
-			World.PlayerShip = new Ship(node, new PlayerController());
+			var shipnode = sceneManager.RootSceneNode.CreateChildSceneNode("player ship");
+			shipnode.Position = new Vector3(0, 0, 0);
+			var shipmeshnode = shipnode.CreateChildSceneNode(); // compensates for mesh orientation
+			shipmeshnode.Orientation = new Quaternion(0.5, 0.5, -0.5, -0.5);
+			shipmeshnode.AttachObject(sceneManager.CreateEntity("ship", "ship_assault_1.mesh"));
+
+			World.PlayerShip = new Ship(shipnode, new PlayerController());
 
 			// Create a AI Ships
-			for (int i = 0; i < 10; i++)
+			for (int i = 0; i < 6; i++)
 			{
-				var ent2 = SceneManager.CreateEntity("ship" + (i + 2), "ship_assault_1.mesh");
-				var node2 = SceneManager.RootSceneNode.CreateChildSceneNode("ship" + (i + 2));
-				node2.Position = new Vector3(0, -16, 0);
-				node2.Rotate(new Vector3(1, 0, 0), 90.0f);
-				node2.AttachObject(ent2);
-				World.AddShip(new Ship(node2, new FollowController(i == 0 ? World.PlayerShip : World.Ships[i - 1])));
+				var ainode = sceneManager.RootSceneNode.CreateChildSceneNode("ai ship " + (i + 1));
+				ainode.Position = new Vector3(0, 0, 0);
+				var aimeshnode = ainode.CreateChildSceneNode(); // compensates for mesh orientation
+				aimeshnode.Orientation = new Quaternion(0.5, 0.5, -0.5, -0.5);
+				aimeshnode.AttachObject(sceneManager.CreateEntity("ai ship " + (i + 1), "ship_assault_1.mesh"));
+
+				World.AddShip(new Ship(ainode, new FollowController(i == 0 ? World.PlayerShip : World.Ships[i - 1])));
 			}
+
+			// Camera
+			camera = new SmoothCamera("Camera", sceneManager, World.PlayerShip, 6);
+
+			// Lighting
+			multiLights = new MultiLights(sceneManager, camera.Node, World.PlayerShip, 5);
+			multiLights.PlayerLightColor = new ColorEx(0.85f, 0.77f, 0.60f);
+			multiLights.CamLightColor = new ColorEx(0.85f, 0.77f, 0.60f) * 0.5f;
+			sceneManager.AmbientLight = new ColorEx(0.09f, 0.08f, 0.06f);
+
+			// Viewport
+			viewport = window.AddViewport(camera, 0, 0, 1.0f, 1.0f, 100);
+			viewport.BackgroundColor = ColorEx.Black;
 		}
 
 		public void Run()
 		{
 			InitializeSystem();
 			InitializeScene();
-
-			CreateScene();
-			Engine.StartRendering();
+			root.StartRendering();
 		}
 
-		private void Engine_FrameRenderingQueued(object source, FrameEventArgs e) // Gameloop, called during every render. CPU is free during render.
-		{
-			var ticksAhead = Stopwatch.ElapsedTicks - LastPhysicsStepTicks; // ticksAhead goes from 0 to PhysicsDelayTicks
+		private int counter = 0;
 
-			if (ticksAhead < PhysicsDelayTicks) // continue to draw as fast as possible
+		private void RootFrameRenderingQueued(object source, FrameEventArgs e) // Gameloop, called during every render. CPU is free during render.
+		{
+			var ticksAhead = stopwatch.ElapsedTicks - lastPhysicsStepTicks; // ticksAhead goes from 0 to PhysicsDelayTicks
+
+			if (ticksAhead < physicsDelayTicks) // continue to draw as fast as possible
 			{
-				var percent = ticksAhead * TicksToPhysicsStepPercentFactor;
+				var percent = ticksAhead * ticksToPhysicsStepPercentFactor;
+
+				//Debug.WriteLine(counter++);
 				World.Draw(percent);
-				Camera.LookAt(World.PlayerShip.Node.Position);
-				Spotlight.Position = World.PlayerShip.Node.Position + new Vector3(0, 0, 256);
+				camera.Draw(percent);
+				multiLights.Draw(percent);
+
 			}
 			else // compute the next physics step
 			{
-				LastPhysicsStepTicks += PhysicsDelayTicks;
+				lastPhysicsStepTicks += physicsDelayTicks;
 				World.Loop(World);
+				camera.Loop(World);
+				multiLights.Loop(World);
+				counter = 0;
 			}
-
 		}
 
 		#region IDisposable Implementation
@@ -179,20 +171,20 @@ namespace Evolution_War
 			{
 				if (disposeManagedResources)
 				{
-					if (Engine != null)
-						Engine.FrameStarted -= Engine_FrameRenderingQueued;
-					if (SceneManager != null)
-						SceneManager.RemoveAllCameras();
-					Camera = null;
+					if (root != null)
+						root.FrameStarted -= RootFrameRenderingQueued;
+					if (sceneManager != null)
+						sceneManager.RemoveAllCameras();
+					camera = null;
 					if (Root.Instance != null)
-						Root.Instance.RenderSystem.DetachRenderTarget(Window);
-					if (Window != null)
+						Root.Instance.RenderSystem.DetachRenderTarget(window);
+					if (window != null)
 					{
-						WindowEventMonitor.Instance.UnregisterWindow(Window);
-						Window.Dispose();
+						WindowEventMonitor.Instance.UnregisterWindow(window);
+						window.Dispose();
 					}
-					if (Engine != null)
-						Engine.Dispose();
+					if (root != null)
+						root.Dispose();
 				}
 
 				// There are no unmanaged resources to release, but
@@ -221,7 +213,7 @@ namespace Evolution_War
 		public void WindowClosed(RenderWindow rw)
 		{
 			// Only do this for the Main Window
-			if (rw == Window)
+			if (rw == window)
 			{
 				Root.Instance.QueueEndRendering();
 			}
