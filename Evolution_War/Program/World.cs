@@ -9,7 +9,7 @@ namespace Evolution_War
 {
 	public class World // the world contains all of the objects and processes each one's drawing and physics
 	{
-		public Level Level;
+		public Arena Arena;
 		public Ship PlayerShip;
 		public List<Ship> Ships;
 

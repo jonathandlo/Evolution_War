@@ -92,7 +92,7 @@
     <Compile Include="Program\SmoothCamera.cs" />
     <Compile Include="Program\Game.cs" />
     <Compile Include="Program\Input.cs" />
-    <Compile Include="Program\Level.cs" />
+    <Compile Include="Program\Arena.cs" />
     <Compile Include="Program\Methods.cs" />
     <Compile Include="Program\Program.cs" />
     <Compile Include="Program\Ship Controllers.cs" />

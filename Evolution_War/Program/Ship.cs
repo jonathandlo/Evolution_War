@@ -66,10 +66,10 @@ namespace Evolution_War
 
 			// wall collision
 
-			if (x + dx > pWorld.Level.Right) dx = -Math.Abs(dx);
-			else if (x + dx < pWorld.Level.Left) dx = Math.Abs(dx);
-			if (y + dy > pWorld.Level.Bottom) dy = -Math.Abs(dy);
-			else if (y + dy < pWorld.Level.Top) dy = Math.Abs(dy);
+			if (x + dx > pWorld.Arena.Right) dx = -Math.Abs(dx);
+			else if (x + dx < pWorld.Arena.Left) dx = Math.Abs(dx);
+			if (y + dy > pWorld.Arena.Bottom) dy = -Math.Abs(dy);
+			else if (y + dy < pWorld.Arena.Top) dy = Math.Abs(dy);
 
 			// advance position
 			x += dx;

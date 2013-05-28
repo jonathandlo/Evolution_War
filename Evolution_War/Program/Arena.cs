@@ -8,7 +8,7 @@ using Axiom.Math;
 
 namespace Evolution_War
 {
-	public class Level
+	public class Arena
 	{
 		public SceneNode Node { get; set; }
 
@@ -19,7 +19,7 @@ namespace Evolution_War
 		public Int32 Top { get; private set; }
 		public Int32 Bottom { get; private set; }
 
-		public Level(SceneManager pSceneManager, Int32 pScale, Int32 pNumAdditionalGrids)
+		public Arena(SceneManager pSceneManager, Int32 pScale, Int32 pNumAdditionalGrids)
 		{
 			var random = new Random();
 			var topgrid = pSceneManager.CreateEntity("grid top", "grid.mesh");

@@ -85,7 +85,7 @@ namespace Evolution_War
 			World = new World();
 
 			// Create the Level Grid
-			World.Level = new Level(sceneManager, 500, 4);
+			World.Arena = new Arena(sceneManager, 500, 4);
 
 			// Create Player Ship
 			var shipnode = sceneManager.RootSceneNode.CreateChildSceneNode("player ship");
