@@ -129,30 +129,31 @@ namespace Evolution_War
 			root.StartRendering();
 		}
 
-		private int counter = 0;
+		//private int counter = 0;
 
 		private void RootFrameRenderingQueued(object source, FrameEventArgs e) // Gameloop, called during every render. CPU is free during render.
 		{
 			var ticksAhead = stopwatch.ElapsedTicks - lastPhysicsStepTicks; // ticksAhead goes from 0 to PhysicsDelayTicks
 
-			if (ticksAhead < physicsDelayTicks) // continue to draw as fast as possible
-			{
-				var percent = ticksAhead * ticksToPhysicsStepPercentFactor;
-
-				//Debug.WriteLine(counter++);
-				World.Draw(percent);
-				camera.Draw(percent);
-				multiLights.Draw(percent);
-
-			}
-			else // compute the next physics step
+			while (ticksAhead >= physicsDelayTicks)
 			{
 				lastPhysicsStepTicks += physicsDelayTicks;
+				ticksAhead -= physicsDelayTicks;
+				//counter = 0;
+
 				World.Loop(World);
 				camera.Loop(World);
 				multiLights.Loop(World);
-				counter = 0;
 			}
+
+			var percent = ticksAhead * ticksToPhysicsStepPercentFactor;
+			//counter++;
+			//Debug.WriteLine((Int32)root.CurrentFPS + "  |  " + counter + "  |  " + percent);
+
+			// continue to draw as fast as possible
+			World.Draw(percent);
+			camera.Draw(percent);
+			multiLights.Draw(percent);
 		}
 
 		#region IDisposable Implementation
