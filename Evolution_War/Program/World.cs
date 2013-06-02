@@ -12,6 +12,7 @@ namespace Evolution_War
 		public Arena Arena;
 		public Ship PlayerShip;
 		public List<Ship> Ships;
+		public List<Bullet> Bullets;
 
 		public World()
 		{
@@ -41,6 +42,11 @@ namespace Evolution_War
 		public void AddShip(Ship pShip)
 		{
 			Ships.Add(pShip);
+		}
+
+		public void AddBullet(Bullet pBullet)
+		{
+			Bullets.Add(pBullet);
 		}
 	}
 }

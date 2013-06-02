@@ -25,7 +25,7 @@ namespace Evolution_War
 		private Int32 outerLights;
 		private Int32 innerLights;
 
-		public MultiLights(SceneManager pSceneManager, SceneNode pCamNode, Ship pPlayerShip, Int32 pNumberOfLights)
+		public MultiLights(SceneManager pSceneManager, SceneNode pCamNode, MovingObject pPlayerShip, Int32 pNumberOfLights)
 		{
 			oldCamLightColor = CamLightColor = new ColorEx(0.13f, 0.1f, 0.05f);
 			PlayerLightColor = ColorEx.White;
@@ -39,7 +39,7 @@ namespace Evolution_War
 			playerLight.Type = LightType.Spotlight;
 			playerLight.Diffuse = PlayerLightColor;
 			playerLight.Specular = ColorEx.White;
-			playerLight.SetSpotlightRange(60.0f, 120.0f);
+			playerLight.SetSpotlightRange(0.0f, 120.0f);
 			playerLight.Direction = Vector3.NegativeUnitZ;
 
 			playerLightNode = pPlayerShip.Node.CreateChildSceneNode();

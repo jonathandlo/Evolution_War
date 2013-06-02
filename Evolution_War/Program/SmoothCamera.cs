@@ -8,16 +8,16 @@ using Axiom.Math;
 
 namespace Evolution_War
 {
-	public class SmoothCamera : Camera
+	public class SmoothCamera : Camera, BasicDrawable
 	{
 		public SceneNode Node { get; set; }
-		private Ship target;
+		private MovingObject target;
 
 		private Int32 framesBehind; // number of recorded position values - 1. x[framesBehind] will give you the oldest x position
 		private Vector3 cameraOffset = new Vector3(0, -32, 256);
 		private List<Double> x, y, dx, dy;
 
-		public SmoothCamera(String pName, SceneManager pSceneManager, Ship pTarget, Int32 pFramesBehind)
+		public SmoothCamera(String pName, SceneManager pSceneManager, MovingObject pTarget, Int32 pFramesBehind)
 			: base(pName, pSceneManager)
 		{
 			Node = pSceneManager.RootSceneNode.CreateChildSceneNode();

@@ -3,23 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Diagnostics;
-using System.Windows.Forms;
 using Axiom.Core;
-using Axiom.Graphics;
 using Axiom.Math;
 
 namespace Evolution_War
 {
-	public class Ship
+	public abstract class MovingObject : BasicDrawable
 	{
-		public SceneNode Node { get; private set; }
+		public SceneNode Node { get; protected set; } // actual position and orientation
+		public SceneNode MeshNode { get; protected set; } // normalizes mesh orientation
 
-		private Controller controller;
-		private Double x, y, ox, oy; // position
-		private Double dx, dy, odx, ody; // velocity
-		private Double a, oa; // angle (degrees)
-		private Double da, oda; // angular velocity
+		protected Controller controller;
+		protected Double x, y, ox, oy; // position
+		protected Double dx, dy, odx, ody; // velocity
+		protected Double a, oa; // angle (degrees)
+		protected Double da, oda; // angular velocity
 
 		public Vector2 Position { get { return new Vector2(x, y); } }
 		public Vector2 OldPosition { get { return new Vector2(ox, oy); } }
@@ -27,13 +25,9 @@ namespace Evolution_War
 		public Vector2 OldVelocity { get { return new Vector2(odx, ody); } }
 		public Double Angle { get { return a; } }
 
-		public Ship(SceneNode pNode, Controller pController)
+		public MovingObject(Controller pController)
 		{
-			Node = pNode;
 			controller = pController;
-
-			x = ox = pNode.Position.x;
-			y = oy = pNode.Position.y;
 		}
 
 		public void Loop(World pWorld)

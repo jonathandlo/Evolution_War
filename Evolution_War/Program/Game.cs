@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using Axiom.Collections;
 using Axiom.Core;
@@ -35,6 +36,7 @@ namespace Evolution_War
 
 		public void InitializeSystem()
 		{
+			Methods.StringBuilder = new StringBuilder(32);
 			configManager = new Config.DefaultConfigurationManager();
 			root = new Root(configManager.LogFilename);
 			root.FrameRenderingQueued += RootFrameRenderingQueued;
@@ -53,7 +55,7 @@ namespace Evolution_War
 			{
 				{"vsync", "true"},
 				{"Anti aliasing", "None"},
-				{"FSAA", 2},
+				{"FSAA", 1},
 				{"colorDepth", 32},
 				{"border", "fixed"}
 			};
@@ -82,30 +84,16 @@ namespace Evolution_War
 			lastPhysicsStepTicks = 0.0;
 
 			// Create the World
-			World = new World();
-
-			// Create the Level Grid
-			World.Arena = new Arena(sceneManager, 500, 4);
+			World = new World {Arena = new Arena(sceneManager, 500, 4)};
 
 			// Create Player Ship
-			var shipnode = sceneManager.RootSceneNode.CreateChildSceneNode("player ship");
-			shipnode.Position = new Vector3(0, 0, 0);
-			var shipmeshnode = shipnode.CreateChildSceneNode(); // compensates for mesh orientation
-			shipmeshnode.Orientation = new Quaternion(0.5, 0.5, -0.5, -0.5);
-			shipmeshnode.AttachObject(sceneManager.CreateEntity("ship", "ship_assault_1.mesh"));
 
-			World.PlayerShip = new Ship(shipnode, new PlayerController());
+			World.PlayerShip = new Ship(sceneManager, new PlayerController(), "Player Ship ");
 
 			// Create a AI Ships
-			for (int i = 0; i < 6; i++)
+			for (int i = 0; i < 60; i++)
 			{
-				var ainode = sceneManager.RootSceneNode.CreateChildSceneNode("ai ship " + (i + 1));
-				ainode.Position = new Vector3(0, 0, 0);
-				var aimeshnode = ainode.CreateChildSceneNode(); // compensates for mesh orientation
-				aimeshnode.Orientation = new Quaternion(0.5, 0.5, -0.5, -0.5);
-				aimeshnode.AttachObject(sceneManager.CreateEntity("ai ship " + (i + 1), "ship_assault_1.mesh"));
-
-				World.AddShip(new Ship(ainode, new FollowController(i == 0 ? World.PlayerShip : World.Ships[i - 1])));
+				World.AddShip(new Ship(sceneManager, new FollowController(i == 0 ? World.PlayerShip : World.Ships[i - 1])));
 			}
 
 			// Camera

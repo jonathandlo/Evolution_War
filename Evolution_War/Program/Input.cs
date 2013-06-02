@@ -11,7 +11,7 @@ namespace Evolution_War
 	public static class Input
 	{
 		[DllImport("user32.dll")]
-		private static extern short GetAsyncKeyState(Keys pKey);
+		private static extern Int32 GetAsyncKeyState(Keys pKey);
 		public static Boolean GetKey(Keys pKey){ return GetAsyncKeyState(pKey) < 0; }
 	}
 
@@ -21,6 +21,7 @@ namespace Evolution_War
 		public Boolean Down;
 		public Boolean Left;
 		public Boolean Right;
+		public Boolean C;
 		public Boolean X;
 		public Boolean Z;
 
@@ -30,18 +31,20 @@ namespace Evolution_War
 			Down = Down || pOther.Down;
 			Left = Left || pOther.Left;
 			Right = Right || pOther.Right;
+			X = C || pOther.C;
 			X = X || pOther.X;
 			Z = Z || pOther.Z;
 		}
 
-        public void Clear()
-        {
-            Up = false;
-            Down = false;
-            Left = false;
-            Right = false;
-            X = false;
-            Z = false;
-        }
+		public void Clear()
+		{
+			Up = false;
+			Down = false;
+			Left = false;
+			Right = false;
+			C = false;
+			X = false;
+			Z = false;
+		}
 	}
 }
