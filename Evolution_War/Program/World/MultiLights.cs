@@ -60,8 +60,8 @@ namespace Evolution_War
 				light.Diffuse = CamLightColor;
 				light.Specular = ColorEx.White;
 				light.SetSpotlightRange(0.0f, 25.0f);
-				light.Direction = Quaternion.FromAngleAxis(360.0 * i / innerLights * Methods.DegreesToRadians, Vector3.UnitZ) *
-					Quaternion.FromAngleAxis(10.0 * Methods.DegreesToRadians, Vector3.UnitX) *
+				light.Direction = Quaternion.FromAngleAxis(360.0 * i / innerLights * Constants.DegreesToRadians, Vector3.UnitZ) *
+					Quaternion.FromAngleAxis(10.0 * Constants.DegreesToRadians, Vector3.UnitX) *
 					Vector3.NegativeUnitZ;
 
 				camLights.Add(light);
@@ -74,8 +74,8 @@ namespace Evolution_War
 				light.Diffuse = CamLightColor;
 				light.Specular = ColorEx.White;
 				light.SetSpotlightRange(0.0f, 25.0f);
-				light.Direction = Quaternion.FromAngleAxis(360.0 * i / outerLights * Methods.DegreesToRadians, Vector3.UnitZ) *
-					Quaternion.FromAngleAxis(20.0 * Methods.DegreesToRadians, Vector3.UnitX) *
+				light.Direction = Quaternion.FromAngleAxis(360.0 * i / outerLights * Constants.DegreesToRadians, Vector3.UnitZ) *
+					Quaternion.FromAngleAxis(20.0 * Constants.DegreesToRadians, Vector3.UnitX) *
 					Vector3.NegativeUnitZ;
 
 				camLights.Add(light);
@@ -97,8 +97,8 @@ namespace Evolution_War
 		public void Draw(Double pPercent)
 		{
 			// rotate the camera spotlights around the camera's direction
-			camInnerLightNode.Orientation = Quaternion.FromAngleAxis((baseCamLightAngle + 0.4 * pPercent) * Methods.DegreesToRadians, Vector3.UnitZ);
-			camOuterLightNode.Orientation = Quaternion.FromAngleAxis((baseCamLightAngle + 0.4 * pPercent) * -Methods.DegreesToRadians, Vector3.UnitZ);
+			camInnerLightNode.Orientation = Quaternion.FromAngleAxis((baseCamLightAngle + 0.4 * pPercent) * Constants.DegreesToRadians, Vector3.UnitZ);
+			camOuterLightNode.Orientation = Quaternion.FromAngleAxis((baseCamLightAngle + 0.4 * pPercent) * -Constants.DegreesToRadians, Vector3.UnitZ);
 		}
 	}
 }

@@ -8,22 +8,19 @@ using System.Windows.Forms;
 
 namespace Evolution_War
 {
-	public static class Input
+	public class InputStates
 	{
 		[DllImport("user32.dll")]
 		private static extern Int32 GetAsyncKeyState(Keys pKey);
 		public static Boolean GetKey(Keys pKey){ return GetAsyncKeyState(pKey) < 0; }
-	}
 
-	public struct InputStates
-	{
-		public Boolean Up;
-		public Boolean Down;
-		public Boolean Left;
-		public Boolean Right;
-		public Boolean C;
-		public Boolean X;
-		public Boolean Z;
+		public Boolean Up;	  // thrust
+		public Boolean Down;  // brake
+		public Boolean Left;  // turn
+		public Boolean Right; // turn
+		public Boolean C;	  // fire main
+		public Boolean X;	  // fire secondary
+		public Boolean Z;	  // upgrade
 
 		public void Add(InputStates pOther)
 		{

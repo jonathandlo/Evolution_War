@@ -88,22 +88,28 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program\BasicDrawable.cs" />
+    <Compile Include="Program\Controllers\DumbController.cs" />
+    <Compile Include="Program\Guns\Cannon.cs" />
+    <Compile Include="Program\Guns\Gun.cs" />
     <Compile Include="Program\Moving Objects\Bullet.cs" />
     <Compile Include="Program\Moving Objects\MovingObject.cs" />
-    <Compile Include="Program\Controllers\BaseWaypointController.cs" />
+    <Compile Include="Program\Controllers\WaypointController.cs" />
     <Compile Include="Program\Controllers\FollowController.cs" />
     <Compile Include="Program\Controllers\PlayerController.cs" />
-    <Compile Include="Program\MultiLights.cs" />
-    <Compile Include="Program\SmoothCamera.cs" />
+    <Compile Include="Program\Static Helpers\Constants.cs" />
+    <Compile Include="Program\Static Helpers\LoopResultStates.cs" />
+    <Compile Include="Program\Static Helpers\RecycleFactory.cs" />
+    <Compile Include="Program\Static Helpers\UpgradeLevels.cs" />
+    <Compile Include="Program\World\MultiLights.cs" />
+    <Compile Include="Program\World\SmoothCamera.cs" />
     <Compile Include="Program\Game.cs" />
-    <Compile Include="Program\Input.cs" />
-    <Compile Include="Program\Arena.cs" />
-    <Compile Include="Program\Methods.cs" />
+    <Compile Include="Program\Static Helpers\InputStates.cs" />
+    <Compile Include="Program\World\Arena.cs" />
+    <Compile Include="Program\Static Helpers\Methods.cs" />
     <Compile Include="Program\Program.cs" />
     <Compile Include="Program\Controllers\Controller.cs" />
     <Compile Include="Program\Moving Objects\Ship.cs" />
-    <Compile Include="Program\World.cs" />
+    <Compile Include="Program\World\World.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -127,6 +133,13 @@
     <Content Include="Meshes\gridMaterial.material">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Meshes\bullet.mesh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Meshes\Bullet_Mateial.material">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="Class Diagram.cd" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

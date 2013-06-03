@@ -3,7 +3,7 @@ using Axiom.Math;
 
 namespace Evolution_War
 {
-	public abstract class BaseWaypointController : Controller
+	public abstract class WaypointController : Controller
 	{
 		protected List<Vector2> Targets = new List<Vector2>();
 
@@ -15,7 +15,7 @@ namespace Evolution_War
 			{
 				var nextTarget = Targets[0];
 				var vectorToTarget = nextTarget - pShip.Position; // direction to target
-				var vectorToFacing = pShip.Velocity + 2 * Methods.AngleToVector(pShip.Angle * Methods.DegreesToRadians); // ship's velocity plus a little bit of it's rotation
+				var vectorToFacing = pShip.Velocity + 2 * Methods.AngleToVector(pShip.Angle * Constants.DegreesToRadians); // ship's velocity plus a little bit of it's rotation
 				var vectorAlong = Methods.Projection(vectorToFacing, vectorToTarget); // the part of the facing vector that is in line with the target (how close we are to pointing to the target)
 				var vectorAside = vectorToTarget - vectorAlong; // the part of the facing vector that is looking to the side of the target (how close we are to looking 90 degrees away from the target)
 

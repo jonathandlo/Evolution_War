@@ -8,7 +8,7 @@ using Axiom.Math;
 
 namespace Evolution_War
 {
-	public class SmoothCamera : Camera, BasicDrawable
+	public class SmoothCamera : Camera
 	{
 		public SceneNode Node { get; set; }
 		private MovingObject target;

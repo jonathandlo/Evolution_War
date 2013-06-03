@@ -1,0 +1,138 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Evolution_War.WaypointController" Collapsed="true">
+    <Position X="2.25" Y="5.75" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>Program\Controllers\WaypointController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Evolution_War.Controller" Collapsed="true">
+    <Position X="3.75" Y="4.75" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAIAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Program\Controllers\Controller.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Evolution_War.FollowController" Collapsed="true">
+    <Position X="2.25" Y="6.75" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAIAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Program\Controllers\FollowController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Evolution_War.PlayerController" Collapsed="true">
+    <Position X="3.75" Y="5.75" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Program\Controllers\PlayerController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Evolution_War.Game" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="0.5" Y="1.25" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>QAgAAAAgAjAEAIBgJAAiCBAAIAEAAAIIAAAABAAQAAI=</HashCode>
+      <FileName>Program\Game.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Evolution_War.Bullet" Collapsed="true">
+    <Position X="3.25" Y="2.75" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAEAQAAAAAAAAAAAAAhAAQAAAABAAAAAAAAAAAA=</HashCode>
+      <FileName>Program\Moving Objects\Bullet.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Evolution_War.MovingObject" Collapsed="true">
+    <Position X="4" Y="1.75" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAgQAQIAAAEAgEgAAQIAABAAQEAAAAgAEBgCAGEBAg=</HashCode>
+      <FileName>Program\Moving Objects\MovingObject.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Evolution_War.Ship" Collapsed="true">
+    <Position X="4.75" Y="2.75" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAgAAAAAA=</HashCode>
+      <FileName>Program\Moving Objects\Ship.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Evolution_War.Program" Collapsed="true">
+    <Position X="0.5" Y="0.5" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>Program\Program.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Evolution_War.Methods" Collapsed="true">
+    <Position X="6.25" Y="0.5" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAQIAAAAAAQAAAAAAIAAIACAAAAAAAAAEAAAAAwAAA=</HashCode>
+      <FileName>Program\Static Helpers\Methods.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Evolution_War.UpgradeLevels" Collapsed="true">
+    <Position X="4.75" Y="0.5" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAIAIAAAAAgAAAAEAAAAAAoAgAAAAAAAAAAAACAAhBA=</HashCode>
+      <FileName>Program\Static Helpers\UpgradeLevels.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Evolution_War.Arena" Collapsed="true">
+    <Position X="1" Y="2.75" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAABAAAAAAAAAAQAEAAAAAIAAAACACAAAEAAAA=</HashCode>
+      <FileName>Program\World\Arena.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Evolution_War.MultiLights" Collapsed="true">
+    <Position X="1" Y="3.5" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AACAAAEIAAAAAggAAAkBAAEAAAACAAAECCAAAAAAAAA=</HashCode>
+      <FileName>Program\World\MultiLights.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Evolution_War.SmoothCamera" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="1" Y="4.25" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAQIAAAAAgABIAAIAAAAAAAAAAAAAABgAAEABAA=</HashCode>
+      <FileName>Program\World\SmoothCamera.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Evolution_War.World" Collapsed="true">
+    <Position X="0.75" Y="2" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAoAAIAAAAEgQAEAAQAQABAAAAAAAAAAAAAAAAAAQ=</HashCode>
+      <FileName>Program\World\World.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Evolution_War.Gun" Collapsed="true">
+    <Position X="6.5" Y="2.75" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>EAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Program\Guns\Gun.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Evolution_War.Cannon" Collapsed="true">
+    <Position X="6.5" Y="3.5" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>EAAAAACAAAAAEAAAEAAAAAABAAAIABAAAAAAAAAAAAA=</HashCode>
+      <FileName>Program\Guns\Cannon.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Evolution_War.DumbController" Collapsed="true">
+    <Position X="5.25" Y="5.75" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Program\Controllers\DumbController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Evolution_War.InputStates" Collapsed="true">
+    <Position X="5.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAgAAAAAA=</HashCode>
+      <FileName>Program\Static Helpers\InputStates.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="8.25" />
+</ClassDiagram>

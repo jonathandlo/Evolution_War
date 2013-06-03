@@ -32,11 +32,10 @@ namespace Evolution_War
 		// Game World
 		public World World { get; private set; }
 		private SmoothCamera camera;
-		private MultiLights multiLights;
+		private Light sunlight;
 
 		public void InitializeSystem()
 		{
-			Methods.StringBuilder = new StringBuilder(32);
 			configManager = new Config.DefaultConfigurationManager();
 			root = new Root(configManager.LogFilename);
 			root.FrameRenderingQueued += RootFrameRenderingQueued;
@@ -84,14 +83,12 @@ namespace Evolution_War
 			lastPhysicsStepTicks = 0.0;
 
 			// Create the World
-			World = new World {Arena = new Arena(sceneManager, 500, 4)};
-
-			// Create Player Ship
-
+			World = new World(sceneManager);
+			World.Arena = new Arena(sceneManager, 500, 4);
 			World.PlayerShip = new Ship(sceneManager, new PlayerController(), "Player Ship ");
 
 			// Create a AI Ships
-			for (int i = 0; i < 60; i++)
+			for (var i = 0; i < 2; i++)
 			{
 				World.AddShip(new Ship(sceneManager, new FollowController(i == 0 ? World.PlayerShip : World.Ships[i - 1])));
 			}
@@ -100,10 +97,15 @@ namespace Evolution_War
 			camera = new SmoothCamera("Camera", sceneManager, World.PlayerShip, 6);
 
 			// Lighting
-			multiLights = new MultiLights(sceneManager, camera.Node, World.PlayerShip, 5);
-			multiLights.PlayerLightColor = new ColorEx(0.85f, 0.77f, 0.60f);
-			multiLights.CamLightColor = new ColorEx(0.85f, 0.77f, 0.60f) * 0.5f;
-			sceneManager.AmbientLight = new ColorEx(0.09f, 0.08f, 0.06f);
+			sunlight = sceneManager.CreateLight("Sunlight");
+			sunlight.Type = LightType.Spotlight;
+			sunlight.Specular = ColorEx.White;
+			sunlight.Diffuse = new ColorEx(0.85f, 0.77f, 0.60f);
+			sunlight.Position = new Vector3(0, 0, 0);
+			sunlight.Direction = Vector3.NegativeUnitZ;
+			sunlight.SetSpotlightRange(15, 60);
+			sceneManager.AmbientLight = ColorEx.Black; // new ColorEx(0.09f, 0.08f, 0.06f);
+			camera.Node.AttachObject(sunlight);
 
 			// Viewport
 			viewport = window.AddViewport(camera, 0, 0, 1.0f, 1.0f, 100);
@@ -129,9 +131,8 @@ namespace Evolution_War
 				ticksAhead -= physicsDelayTicks;
 				//counter = 0;
 
-				World.Loop(World);
+				World.Loop();
 				camera.Loop(World);
-				multiLights.Loop(World);
 			}
 
 			var percent = ticksAhead * ticksToPhysicsStepPercentFactor;
@@ -141,7 +142,6 @@ namespace Evolution_War
 			// continue to draw as fast as possible
 			World.Draw(percent);
 			camera.Draw(percent);
-			multiLights.Draw(percent);
 		}
 
 		#region IDisposable Implementation

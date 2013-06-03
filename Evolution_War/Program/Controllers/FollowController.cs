@@ -1,6 +1,6 @@
 namespace Evolution_War
 {
-	public class FollowController : BaseWaypointController
+	public class FollowController : WaypointController
 	{
 		private MovingObject TargetShip;
 

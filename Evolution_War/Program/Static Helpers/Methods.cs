@@ -9,9 +9,6 @@ namespace Evolution_War
 {
 	public static class Methods
 	{
-		public const Double DegreesToRadians = Math.PI / 180.0;
-		public static StringBuilder StringBuilder { get; set; }
-
 		private static Int64 CurrentUniqueID = 0;
 
 		public static Int64 GenerateUniqueID()
@@ -21,8 +18,8 @@ namespace Evolution_War
 
 		public static Double CubicStep(Double pFirstPoint, Double pFirstSlope, Double pSecondPoint, Double pSecondSlope, Double pPercent) // 1st point, 1st speed, 2nd point, 2nd speed, time = [0, 1]
 		{
-			Double t2 = pPercent * pPercent;
-			Double t3 = t2 * pPercent;
+			var t2 = pPercent * pPercent;
+			var t3 = t2 * pPercent;
 
 			return ((2 * t3 - 3 * t2 + 1) * pFirstPoint + (t3 - 2 * t2 + pPercent) * pFirstSlope + (-2 * t3 + 3 * t2) * pSecondPoint + (t3 - t2) * pSecondSlope);
 		}

@@ -8,16 +8,12 @@ material gridMaterial
     {
         pass gridMaterial
         {
-            //ambient 0.800000011920929 0.800000011920929 0.800000011920929 1.0
-            //diffuse 0.6400000190734865 0.6400000190734865 0.6400000190734865 1.0
-            //specular 0 0 0 0
-            //emissive 0.0 0.0 0.0 1.0
-
+            receive_shadows off
+            lighting on
             cull_hardware none
             depth_check on
-            scene_blend add
-            //scene_blend one zero
-            //scene_blend_op add
+            //scene_blend add
+            scene_blend src_color one
 
             texture_unit 
             {

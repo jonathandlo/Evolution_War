@@ -1,0 +1,30 @@
+// Bullet Mateial genrated by blender2ogre 0.5.9
+
+material Bullet_Mateial 
+{
+    receive_shadows on 
+
+    technique
+    {
+        pass Bullet Mateial
+        {
+            alpha_to_coverage off
+            colour_write on
+            cull_hardware clockwise
+            depth_check on
+            depth_func less_equal
+            depth_write on
+            illumination_stage 
+            light_clip_planes off
+            light_scissor off
+            lighting on
+            //normalise_normals off
+            //polygon_mode solid
+            scene_blend add
+            //scene_blend one zero
+            //scene_blend_op add
+            shading gouraud
+            transparent_sorting on
+        }
+    }
+}

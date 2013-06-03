@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Axiom.Core;
 
 namespace Evolution_War
 {
-	public interface BasicDrawable
+	public class LoopResultStates
 	{
-		SceneNode Node { get; }
+		public Boolean Remove = false;
 
-		void Loop(World pWorld);
-		void Draw(Double pPercent);
+		public void Clear()
+		{
+			Remove = false;
+		}
 	}
 }
