@@ -13,7 +13,8 @@ namespace Evolution_War
 {
 	public class Ship : MovingObject
 	{
-		public UpgradeLevels UpgradeLevels { get; protected set; }
+		public Upgrades Upgrades { get; protected set; }
+		public Int32 AvailableUpgradePoints = 0;
 		protected Cannon cannon;
 
 		public Ship(SceneManager pSceneManager, Controller pController, String pPrefix = "Ship ")
@@ -26,24 +27,22 @@ namespace Evolution_War
 			MeshNode.Orientation = new Quaternion(0.5, 0.5, -0.5, -0.5);
 			MeshNode.AttachObject(pSceneManager.CreateEntity(name, "ship_assault_1.mesh"));
 
-			UpgradeLevels = new UpgradeLevels()
-							{
-								LevelCannonAutoFire = 7,
-								LevelCannonSpeed = 5,
-								LevelCannonMultiFire = 4
-							};
+			Upgrades = new Upgrades();
+			Upgrades.CannonAutoFire.Level = 5;
+			Upgrades.CannonMultiFire.Level = 2;
+			Upgrades.CannonSpeed.Level = 4;
+
 			cannon = new Cannon(this);
-			UpgradeLevels.UpgradeCannon(ref cannon, UpgradeLevels);
+			Upgrades.UpgradeCannon(ref cannon, Upgrades);
 		}
 
 		protected override void LoopControlPhysics(World pWorld)
 		{
 			base.LoopControlPhysics(pWorld);
 
-			if (controller.InputStates.C)
-			{
-				cannon.TryShoot(pWorld);
-			}
+			if (controller.InputStates.Fire) cannon.TryShoot(pWorld);
+			if (controller.InputStates.DeltaSecondary) pWorld.HUD.AddPoints();
+			if (controller.InputStates.DeltaUpgrade) pWorld.HUD.PressUpgrade();
 		}
 	}
 }

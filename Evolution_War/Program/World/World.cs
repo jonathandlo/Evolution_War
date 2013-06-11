@@ -8,10 +8,11 @@ using Axiom.Math;
 
 namespace Evolution_War
 {
-	public class World // the world contains all of the objects and processes each one's drawing and physics
+	public class World // The world contains all of the objects and processes each one's drawing and physics.
 	{
-		public Int64 FrameCount { get; private set; }
+		public Int64 FrameCount { get; private set; } // Used as a general purpose game timer.
 		public SceneManager SceneManager { get; private set; }
+		public HUDManager HUD { get; private set; }
 
 		public List<Ship> Ships;
 		public List<Bullet> Bullets;
@@ -20,9 +21,11 @@ namespace Evolution_War
 
 		public World(SceneManager pSceneManager)
 		{
+			PlayerShip = new Ship(pSceneManager, new PlayerController(), "Player Ship");
 			SceneManager = pSceneManager;
 			Ships = new List<Ship>(48);
 			Bullets = new List<Bullet>(256);
+			HUD = new HUDManager(this, PlayerShip);
 		}
 
 		public void Loop()
@@ -49,6 +52,8 @@ namespace Evolution_War
 					Bullets.RemoveAt(i);
 				}
 			}
+
+			HUD.Loop();
 		}
 
 		public void Draw(Double pPercent)
@@ -63,6 +68,8 @@ namespace Evolution_War
 			{
 				Bullets[i].Draw(pPercent);
 			}
+
+			HUD.Draw(pPercent);
 		}
 
 		public void AddShip(Ship pShip)

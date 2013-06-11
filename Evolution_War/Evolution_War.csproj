@@ -63,10 +63,6 @@
     <Reference Include="Axiom.SceneManagers.Octree">
       <HintPath>..\packages\Axiom.SceneManagers.Octree.0.8.3376.12322\lib\net35\Axiom.SceneManagers.Octree.dll</HintPath>
     </Reference>
-    <Reference Include="Common.Logging, Version=2.0.0.4042, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Libraries\Common.Logging.dll</HintPath>
-    </Reference>
     <Reference Include="FreeImageNet">
       <HintPath>..\packages\Axiom.Plugins.FreeImageCodecs.0.8.3376.12322\lib\net35\FreeImageNet.dll</HintPath>
     </Reference>
@@ -100,6 +96,7 @@
     <Compile Include="Program\Static Helpers\LoopResultStates.cs" />
     <Compile Include="Program\Static Helpers\RecycleFactory.cs" />
     <Compile Include="Program\Static Helpers\UpgradeLevels.cs" />
+    <Compile Include="Program\World\HUD.cs" />
     <Compile Include="Program\World\MultiLights.cs" />
     <Compile Include="Program\World\SmoothCamera.cs" />
     <Compile Include="Program\Game.cs" />
@@ -116,6 +113,9 @@
     <None Include="App.config" />
     <Content Include="..\packages\Axiom.Plugins.FreeImageCodecs.0.8.3376.12322\native\x86\freeimage.dll">
       <Link>freeimage.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Fonts\Candara.ttf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Meshes\grid.png">
@@ -140,6 +140,18 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="Class Diagram.cd" />
+    <Content Include="Fonts\Candarab.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Fonts\Candarai.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Fonts\Candaraz.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Meshes\colors.material">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

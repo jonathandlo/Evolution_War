@@ -31,8 +31,8 @@ namespace Evolution_War
 					Owner.Position.y,
 					Owner.Velocity.x,
 					Owner.Velocity.y,
-					Owner.Angle + Constants.MultiFireAngles[Owner.UpgradeLevels.LevelCannonMultiFire][i],
-					Constants.MultiFireOffsets[Owner.UpgradeLevels.LevelCannonMultiFire][i], // offset from starting position
+					Owner.Angle + Math.Cos(8 * Owner.AngleVelocity * Constants.DegreesToRadians) * Constants.MultiFireAngles[Owner.Upgrades.CannonMultiFire.Level][i],
+					Math.Cos(8 * Constants.DegreesToRadians) * Constants.MultiFireOffsets[Owner.Upgrades.CannonMultiFire.Level][i], // offset from starting position
 					Speed);
 				pWorld.AddBullet(bullet);
 			}

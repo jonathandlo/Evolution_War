@@ -10,21 +10,22 @@ namespace Evolution_War
 {
 	public abstract class MovingObject
 	{
-		public LoopResultStates LoopResultStates = new LoopResultStates(); // tells the World what to do after Loop()
-		public SceneNode Node { get; protected set; } // actual position and orientation
-		public SceneNode MeshNode { get; protected set; } // normalizes mesh orientation
+		public LoopResultStates LoopResultStates = new LoopResultStates(); // tells the World what to do after Loop().
+		public SceneNode Node { get; protected set; } // actual position and orientation.
+		public SceneNode MeshNode { get; protected set; } // normalizes mesh orientation.
 
 		protected Controller controller;
-		protected Double x, y, ox, oy;		// position
-		protected Double dx, dy, odx, ody;	// velocity
-		protected Double a, oa;				// angle (degrees)
-		protected Double da, oda;			// angular velocity
+		protected Double x, y, ox, oy;		// position.
+		protected Double dx, dy, odx, ody;	// velocity.
+		protected Double a, oa;				// angle (degrees).
+		protected Double da, oda;			// angular velocity.
 
 		public Vector2 Position { get { return new Vector2(x, y); } }
 		public Vector2 OldPosition { get { return new Vector2(ox, oy); } }
 		public Vector2 Velocity { get { return new Vector2(dx, dy); } }
 		public Vector2 OldVelocity { get { return new Vector2(odx, ody); } }
 		public Double Angle { get { return a; } }
+		public Double AngleVelocity { get { return da; } }
 
 		public MovingObject(Controller pController)
 		{
@@ -35,10 +36,10 @@ namespace Evolution_War
 		{
 			LoopResultStates.Clear();
 
-			// update input
+			// update input.
 			controller.Loop(this, pWorld);
 
-			// position and angle memory
+			// position and angle memory.
 			ox = x;
 			oy = y;
 			odx = dx;
@@ -46,12 +47,12 @@ namespace Evolution_War
 			oa = a;
 			oda = da;
 
-			// overridable control and friction physics
+			// overridable control and friction physics.
 			LoopControlPhysics(pWorld);
 			LoopFrictionPhysics();
 			LoopCollisionPhysics(pWorld);
 
-			// advance position
+			// advance position.
 			x += dx;
 			y += dy;
 			oa = a % 360 + oa - a;
@@ -60,20 +61,20 @@ namespace Evolution_War
 
 		protected virtual void LoopControlPhysics(World pWorld)
 		{
-			// thrust
-			dx += 0.1 * Math.Cos(a * Constants.DegreesToRadians) * (controller.InputStates.Up ? 1 : 0);
-			dy += 0.1 * Math.Sin(a * Constants.DegreesToRadians) * (controller.InputStates.Up ? 1 : 0);
-			da += 0.8 * ((controller.InputStates.Right ? -1 : 0) + (controller.InputStates.Left ? 1 : 0));
+			// thrust.
+			dx += 0.2 * Math.Cos(a * Constants.DegreesToRadians) * (controller.InputStates.Up ? 1 : 0);
+			dy += 0.2 * Math.Sin(a * Constants.DegreesToRadians) * (controller.InputStates.Up ? 1 : 0);
+			da += 0.6 * ((controller.InputStates.Right ? -1 : 0) + (controller.InputStates.Left ? 1 : 0));
 		}
 
 		protected virtual void LoopFrictionPhysics()
 		{
-			// dynamic friction
-			dx *= (1 - 0.04) - (controller.InputStates.Down ? 0.1 : 0);
-			dy *= (1 - 0.04) - (controller.InputStates.Down ? 0.1 : 0);
-			da *= (1 - 0.16) - (controller.InputStates.Down ? 0.1 : 0);
+			// dynamic friction.
+			dx *= (1 - 0.08) - (controller.InputStates.Down ? 0.1 : 0);
+			dy *= (1 - 0.08) - (controller.InputStates.Down ? 0.1 : 0);
+			da *= (1 - 0.12);
 
-			// static friction
+			// static friction.
 			dx -= dx > 0 ? Math.Min(0.01, Math.Abs(dx)) * Math.Sign(dx) : 0;
 			dy -= dy > 0 ? Math.Min(0.01, Math.Abs(dy)) * Math.Sign(dy) : 0;
 			da -= da > 0 ? Math.Min(0.01, Math.Abs(da)) * Math.Sign(da) : 0;
@@ -81,7 +82,7 @@ namespace Evolution_War
 
 		protected virtual void LoopCollisionPhysics(World pWorld)
 		{
-			// wall collision
+			// wall collision.
 			if (x + dx > pWorld.Arena.Right) dx = -Math.Abs(dx);
 			else if (x + dx < pWorld.Arena.Left) dx = Math.Abs(dx);
 			if (y + dy > pWorld.Arena.Bottom) dy = -Math.Abs(dy);

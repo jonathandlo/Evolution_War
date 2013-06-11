@@ -4,7 +4,7 @@
 	{
 		public override void Loop(MovingObject pShip, World pWorld)
 		{
-			// no input
+			// no input.
 		}
 	}
 }

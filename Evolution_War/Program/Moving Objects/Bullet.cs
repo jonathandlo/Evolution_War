@@ -23,7 +23,7 @@ namespace Evolution_War
 			OwnerGun = pOwnerGun;
 		}
 
-		public void Reinitialize(Controller pController, Gun pOwnerGun) // used by Factory to recycle Bullet objects
+		public void Reinitialize(Controller pController, Gun pOwnerGun) // used by Factory to recycle Bullet objects.
 		{
 			controller = pController;
 			OwnerGun = pOwnerGun;
@@ -58,7 +58,7 @@ namespace Evolution_War
 
 		protected override void LoopFrictionPhysics()
 		{
-			// no friction
+			// no friction.
 		}
 
 		protected override void LoopCollisionPhysics(World pWorld)

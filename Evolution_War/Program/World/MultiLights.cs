@@ -34,7 +34,7 @@ namespace Evolution_War
 			innerLights = (Int32)Math.Round(pNumberOfLights / 3.0f, MidpointRounding.AwayFromZero);
 			outerLights = pNumberOfLights - innerLights;
 
-			// create the playership's light
+			// create the playership's light.
 			playerLight = pSceneManager.CreateLight("playerSpotLight");
 			playerLight.Type = LightType.Spotlight;
 			playerLight.Diffuse = PlayerLightColor;
@@ -47,7 +47,7 @@ namespace Evolution_War
 			playerLightNode.Position = new Vector3(0, 0, 0);
 			playerLightNode.SetDirection(new Vector3(1, 0, 0), TransformSpace.Local);
 
-			// create the camera spotlights around the camera's direction
+			// create the camera spotlights around the camera's direction.
 			camInnerLightNode = pCamNode.CreateChildSceneNode();
 			camInnerLightNode.Position = new Vector3(0, 0, 0);
 			camOuterLightNode = pCamNode.CreateChildSceneNode();
@@ -96,7 +96,7 @@ namespace Evolution_War
 
 		public void Draw(Double pPercent)
 		{
-			// rotate the camera spotlights around the camera's direction
+			// rotate the camera spotlights around the camera's direction.
 			camInnerLightNode.Orientation = Quaternion.FromAngleAxis((baseCamLightAngle + 0.4 * pPercent) * Constants.DegreesToRadians, Vector3.UnitZ);
 			camOuterLightNode.Orientation = Quaternion.FromAngleAxis((baseCamLightAngle + 0.4 * pPercent) * -Constants.DegreesToRadians, Vector3.UnitZ);
 		}

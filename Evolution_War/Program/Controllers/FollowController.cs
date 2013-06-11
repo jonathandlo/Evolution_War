@@ -25,6 +25,7 @@ namespace Evolution_War
 			}
 
 			InputStates.Add(MoveToNextTarget(pShip));
+			InputStates.DetectPresses();
 		}
 	}
 }

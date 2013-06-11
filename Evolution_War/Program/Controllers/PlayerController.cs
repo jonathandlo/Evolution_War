@@ -10,9 +10,11 @@ namespace Evolution_War
 			InputStates.Down = InputStates.GetKey(Keys.Down);
 			InputStates.Left = InputStates.GetKey(Keys.Left);
 			InputStates.Right = InputStates.GetKey(Keys.Right);
-			InputStates.C = InputStates.GetKey(Keys.C);
-			InputStates.X = InputStates.GetKey(Keys.X);
-			InputStates.Z = InputStates.GetKey(Keys.Z);
+			InputStates.Fire = InputStates.GetKey(Keys.C);
+			InputStates.Secondary = InputStates.GetKey(Keys.X);
+			InputStates.Upgrade = InputStates.GetKey(Keys.Z);
+
+			InputStates.DetectPresses();
 		}
 	}
 }
