@@ -36,8 +36,9 @@
     <StartupObject>Evolution_War.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Axiom">
-      <HintPath>..\packages\Axiom.0.8.3376.12322\lib\net35\Axiom.dll</HintPath>
+    <Reference Include="Axiom, Version=0.8.3376.12322, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Axiom.Platforms.OpenTK.0.8.3376.12322\lib\net35\Axiom.dll</HintPath>
     </Reference>
     <Reference Include="Axiom.Framework">
       <HintPath>..\packages\Axiom.Framework.0.8.3376.12322\lib\net35\Axiom.Framework.dll</HintPath>
@@ -85,9 +86,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program\Controllers\DumbController.cs" />
+    <Compile Include="Program\Controllers\RandomController.cs" />
+    <Compile Include="Program\Controllers\WavyController.cs" />
     <Compile Include="Program\Guns\Cannon.cs" />
     <Compile Include="Program\Guns\Gun.cs" />
     <Compile Include="Program\Moving Objects\Bullet.cs" />
+    <Compile Include="Program\Moving Objects\Trail.cs" />
     <Compile Include="Program\Moving Objects\MovingObject.cs" />
     <Compile Include="Program\Controllers\WaypointController.cs" />
     <Compile Include="Program\Controllers\FollowController.cs" />
@@ -95,7 +99,7 @@
     <Compile Include="Program\Static Helpers\Constants.cs" />
     <Compile Include="Program\Static Helpers\LoopResultStates.cs" />
     <Compile Include="Program\Static Helpers\RecycleFactory.cs" />
-    <Compile Include="Program\Static Helpers\UpgradeLevels.cs" />
+    <Compile Include="Program\Static Helpers\UpgradeGroup.cs" />
     <Compile Include="Program\World\HUD.cs" />
     <Compile Include="Program\World\MultiLights.cs" />
     <Compile Include="Program\World\SmoothCamera.cs" />

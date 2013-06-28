@@ -50,7 +50,7 @@ namespace Evolution_War
 			AutoAspectRatio = true;
 		}
 
-		public void Loop(World pWorld)
+		public void Loop()
 		{
 			x.RemoveAt(x.Count - 1);
 			y.RemoveAt(y.Count - 1);
@@ -68,7 +68,7 @@ namespace Evolution_War
 			Node.Position = new Vector3(
 				cameraOffset.x + Methods.CubicStep(x[framesBehind], dx[framesBehind], x[framesBehind - 1], dx[framesBehind - 1], pPercent),
 				cameraOffset.y + Methods.CubicStep(y[framesBehind], dy[framesBehind], y[framesBehind - 1], dy[framesBehind - 1], pPercent),
-				cameraOffset.z + 8 * Methods.LinearStep(target.OldVelocity.LengthSquared, target.Velocity.LengthSquared, pPercent));
+				cameraOffset.z + 32 * Methods.LinearStep(target.OldVelocity.LengthSquared, target.Velocity.LengthSquared, pPercent));
 			Node.LookAt(new Vector3(
 				Methods.CubicStep(x[framesBehind / 2 + 1], dx[framesBehind / 2 + 1], x[framesBehind / 2], dx[framesBehind / 2], pPercent),
 				Methods.CubicStep(y[framesBehind / 2 + 1], dy[framesBehind / 2 + 1], y[framesBehind / 2], dy[framesBehind / 2], pPercent),

@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>Axiom.RenderSystems.DirectX9</id>
     <version>0.8.3376.12322</version>
@@ -18,8 +18,5 @@
     <dependencies>
       <dependency id="Axiom" version="0.8.3376.12322" />
     </dependencies>
-    <references>
-      <reference file="Axiom.RenderSystems.DirectX9.dll" />
-    </references>
   </metadata>
 </package>

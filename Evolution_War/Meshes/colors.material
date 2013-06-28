@@ -4,12 +4,13 @@ material Red80
 	{ 
 		pass 
 		{
-			scene_blend alpha_blend
+			scene_blend add
 			depth_write off
+			depth_check off
 			texture_unit 
 			{
-				colour_op_ex source1 src_manual src_current 1 0 0
-				alpha_op_ex source1 src_manual src_current 0.8 
+				colour_op_ex source1 src_manual src_current 0.8 0 0
+				//alpha_op_ex source1 src_manual src_current 1 
 			}
 		}
 	}
@@ -20,12 +21,13 @@ material Green80
 	{ 
 		pass 
 		{
-			scene_blend alpha_blend
+			scene_blend add
 			depth_write off
+			depth_check off
 			texture_unit 
 			{
-				colour_op_ex source1 src_manual src_current 0 1 0
-				alpha_op_ex source1 src_manual src_current 0.8 
+				colour_op_ex source1 src_manual src_current 0 0.8 0
+				//alpha_op_ex source1 src_manual src_current 1 
 			}
 		}
 	}
@@ -36,12 +38,13 @@ material Blue80
 	{ 
 		pass 
 		{
-			scene_blend alpha_blend
+			scene_blend add
 			depth_write off
+			depth_check off
 			texture_unit 
 			{
-				colour_op_ex source1 src_manual src_current 0 0 1
-				alpha_op_ex source1 src_manual src_current 0.8 
+				colour_op_ex source1 src_manual src_current 0 0 0.8
+				//alpha_op_ex source1 src_manual src_current 1 
 			}
 		}
 	}
@@ -52,12 +55,13 @@ material Yellow80
 	{ 
 		pass 
 		{
-			scene_blend alpha_blend
+			scene_blend add
 			depth_write off
+			depth_check off
 			texture_unit 
 			{
-				colour_op_ex source1 src_manual src_current 1 1 0
-				alpha_op_ex source1 src_manual src_current 0.8 
+				colour_op_ex source1 src_manual src_current 0.8 0.8 0
+				//alpha_op_ex source1 src_manual src_current 1 
 			}
 		}
 	}
@@ -68,12 +72,13 @@ material Magenta80
 	{ 
 		pass 
 		{
-			scene_blend alpha_blend
+			scene_blend add
 			depth_write off
+			depth_check off
 			texture_unit 
 			{
-				colour_op_ex source1 src_manual src_current 1 0 1
-				alpha_op_ex source1 src_manual src_current 0.8 
+				colour_op_ex source1 src_manual src_current 0.8 0 0.8
+				//alpha_op_ex source1 src_manual src_current 1 
 			}
 		}
 	}
@@ -84,12 +89,13 @@ material Cyan80
 	{ 
 		pass 
 		{
-			scene_blend alpha_blend
+			scene_blend add
 			depth_write off
+			depth_check off
 			texture_unit 
 			{
-				colour_op_ex source1 src_manual src_current 0 1 1
-				alpha_op_ex source1 src_manual src_current 0.8 
+				colour_op_ex source1 src_manual src_current 0 0.8 0.8
+				//alpha_op_ex source1 src_manual src_current 1 
 			}
 		}
 	}
@@ -100,12 +106,13 @@ material White80
 	{ 
 		pass 
 		{
-			scene_blend alpha_blend
+			scene_blend add
 			depth_write off
+			depth_check off
 			texture_unit 
 			{
-				colour_op_ex source1 src_manual src_current 1 1 1
-				alpha_op_ex source1 src_manual src_current 0.8
+				colour_op_ex source1 src_manual src_current 0.8 0.8 0.8
+				//alpha_op_ex source1 src_manual src_current 1
 			}
 		}
 	}
@@ -116,12 +123,13 @@ material Black80
 	{ 
 		pass 
 		{
-			scene_blend alpha_blend
+			scene_blend add
 			depth_write off
+			depth_check off
 			texture_unit 
 			{
 				colour_op_ex source1 src_manual src_current 0 0 0
-				alpha_op_ex source1 src_manual src_current 0.8
+				//alpha_op_ex source1 src_manual src_current 1
 			}
 		}
 	}

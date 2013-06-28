@@ -9,7 +9,7 @@ namespace Evolution_War
 			TargetShip = pTargetShip;
 		}
 
-		public override void Loop(MovingObject pShip, World pWorld)
+		public override void Loop(MovingObject pShip)
 		{
 			InputStates.Clear();
 

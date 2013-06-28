@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Evolution_War
 {
-	public class Upgrades
+	public class UpgradeGroup
 	{
 		public const Int32 NumberOfUpgrades = 10;
 
@@ -19,8 +19,8 @@ namespace Evolution_War
 		public Upgrade ShipThrust		= new Upgrade("Thrust",		3, 0);
 		public Upgrade ShipTurn			= new Upgrade("Turn",		4, 0);
 		public Upgrade ShipArmor		= new Upgrade("Armor",		4, 0);
-		public Upgrade ShipShield		= new Upgrade("Shield",		6, 0);
-		public Upgrade ShipShieldRegen	= new Upgrade("Regen",		6, 0);
+		public Upgrade ShipShield		= new Upgrade("Shield",		5, 0);
+		public Upgrade ShipShieldRegen	= new Upgrade("Regen",		5, 0);
 
 		public Dictionary<Int32, List<Upgrade>> GetUpgradesByCost()
 		{
@@ -46,7 +46,7 @@ namespace Evolution_War
 			pMasterList[pUpgrade.Cost].Add(pUpgrade);
 		}
 
-		public static void UpgradeCannon(ref Cannon pCannon, Upgrades pLevels)
+		public static void UpgradeCannon(ref Cannon pCannon, UpgradeGroup pLevels)
 		{
 			switch (pLevels.CannonPower.Level)
 			{
@@ -75,10 +75,10 @@ namespace Evolution_War
 				case 5: pCannon.Speed = 7; break;
 
 				case 6: pCannon.Speed = 8; break;
-				case 7: pCannon.Speed = 8; break;
-				case 8: pCannon.Speed = 8; break;
-				case 9: pCannon.Speed = 8; break;
-				case 10: pCannon.Speed = 8; break;
+				case 7: pCannon.Speed = 9; break;
+				case 8: pCannon.Speed = 10; break;
+				case 9: pCannon.Speed = 11; break;
+				case 10: pCannon.Speed = 12; break;
 			}
 			switch (pLevels.CannonAutoFire.Level)
 			{
@@ -129,19 +129,19 @@ namespace Evolution_War
 				case 10: pCannon.MultiGuns = 12; break;
 			}
 		}
-	}
 
-	public class Upgrade
-	{
-		public String Name;
-		public Int32 Cost;
-		public Int32 Level;
-
-		public Upgrade(String pName, Int32 pCost, Int32 pLevel)
+		public class Upgrade
 		{
-			Name = pName;
-			Cost = pCost;
-			Level = pLevel;
+			public String Name;
+			public Int32 Cost;
+			public Int32 Level;
+
+			public Upgrade(String pName, Int32 pCost, Int32 pLevel)
+			{
+				Name = pName;
+				Cost = pCost;
+				Level = pLevel;
+			}
 		}
 	}
 }

@@ -9,15 +9,15 @@ namespace Evolution_War
 	public static class Constants
 	{
 		// Configuration constants.
-		public static Int32 Width = 1024;
-		public static Int32 Height = 768;
+		public static Int32 Width = 1280;
+		public static Int32 Height = 720;
 
 		// Optimzation constants.
 		public static readonly StringBuilder StringBuilder = new StringBuilder(32);
 		public const Double DegreesToRadians = Math.PI / 180.0;
 
 		// Gameplay constants.
-		private const Double a = 15, b = 30, c = 45;
+		private const Double a = 8, b = 10, c = 16;
 		public static readonly double[][] MultiFireAngles = // angle pattern for multifire trait.
 		{
 			new double[]              { -0,  0 }, // default

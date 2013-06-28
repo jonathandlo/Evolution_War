@@ -1,5 +1,7 @@
 using System;
+using Axiom.Animating;
 using Axiom.Core;
+using Axiom.Graphics;
 using Axiom.Math;
 
 namespace Evolution_War
@@ -7,49 +9,67 @@ namespace Evolution_War
 	public class Bullet : MovingObject
 	{
 		public Gun OwnerGun;
-		protected const Int32 expirationFrames = 16;
+		protected Trail trail;
+
+		protected const Int32 expirationFrames = 2000;
 		protected Int32 framesAlive = 0;
 
-		public Bullet(SceneManager pSceneManager, Controller pController, Gun pOwnerGun)
+		public Bullet(Controller pController, Gun pOwnerGun)
 			: base(pController)
 		{
-			var name = "Bullet " + Methods.GenerateUniqueID();
+			var bulletname = Methods.GenerateUniqueID.ToString();
 
-			Node = pSceneManager.RootSceneNode.CreateChildSceneNode(name);
+			var bullet = World.Instance.SceneManager.CreateEntity(bulletname, "bullet.mesh");
+			bullet.MaterialName = "White80";
+
+			Node = World.Instance.SceneManager.RootSceneNode.CreateChildSceneNode(bulletname);
+			Node.IsVisible = false;
 			MeshNode = Node.CreateChildSceneNode();
 			MeshNode.Scale = new Vector3(0.3, 0.3, 0.3);
-			MeshNode.AttachObject(pSceneManager.CreateEntity(name, "bullet.mesh"));
+			MeshNode.AttachObject(bullet);
 
-			OwnerGun = pOwnerGun;
+			Reinitialize(pController, pOwnerGun);
 		}
 
 		public void Reinitialize(Controller pController, Gun pOwnerGun) // used by Factory to recycle Bullet objects.
 		{
 			controller = pController;
 			OwnerGun = pOwnerGun;
-			Node.AddChild(MeshNode);
+			framesAlive = 0;
+		}
+
+		public void CreateTrail()
+		{
+			// bullet trail.
+			trail = RecycleFactory.NewTrail(this, 1);
+			World.Instance.AddTrail(trail);
 		}
 
 		public void Recycle()
 		{
-			Node.RemoveAllChildren();
+			trail.ObjectToFollowDisappeared();
+			Node.IsVisible = false;
 		}
 
-		public void Launch(Double pX, Double pY, Double pDx, Double pDy, Double pAngleDegrees, Double pAngledOffset, Double pSpeed)
+		public void SetLaunchParameters(Vector3 pPosition, Vector3 pVelocity, Double pAngleDegrees, Double pAngledOffset, Double pSpeed)
 		{
+			pAngleDegrees += Methods.Random.NextDouble() * 4 - 2;
+			pSpeed *= Methods.Random.NextDouble() * 0.4 + 0.7;
+
 			var offsetAngle = (pAngleDegrees + pAngledOffset) * Constants.DegreesToRadians;
 			var degreeAngle = pAngleDegrees * Constants.DegreesToRadians;
 
-			framesAlive = 0;
-			x = ox = pX + 5 * Math.Cos(offsetAngle);
-			y = oy = pY + 5 * Math.Sin(offsetAngle);
+			x = ox = pPosition.x + Methods.Random.Next(4, 7) * Math.Cos(offsetAngle);
+			y = oy = pPosition.y + Methods.Random.Next(4, 7) * Math.Sin(offsetAngle);
 			a = oa = pAngleDegrees;
-			dx = pDx + pSpeed * Math.Cos(degreeAngle);
-			dy = pDy + pSpeed * Math.Sin(degreeAngle);
+			dx = pVelocity.x + pSpeed * Math.Cos(degreeAngle);
+			dy = pVelocity.y + pSpeed * Math.Sin(degreeAngle);
 		}
 
-		protected override void LoopControlPhysics(World pWorld)
+		protected override void LoopControlPhysics()
 		{
+			base.LoopControlPhysics();
+
 			if (++framesAlive > expirationFrames)
 			{
 				LoopResultStates.Remove = true;
@@ -61,12 +81,12 @@ namespace Evolution_War
 			// no friction.
 		}
 
-		protected override void LoopCollisionPhysics(World pWorld)
+		protected override void LoopCollisionPhysics()
 		{
-			if (x + dx > pWorld.Arena.Right ||
-				x + dx < pWorld.Arena.Left ||
-				y + dy > pWorld.Arena.Bottom ||
-				y + dy < pWorld.Arena.Top)
+			if (x + dx > World.Instance.Arena.Right ||
+				x + dx < World.Instance.Arena.Left ||
+				y + dy > World.Instance.Arena.Bottom ||
+				y + dy < World.Instance.Arena.Top)
 				LoopResultStates.Remove = true;
 		}
 	}

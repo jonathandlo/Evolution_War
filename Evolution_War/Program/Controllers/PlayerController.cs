@@ -4,7 +4,7 @@ namespace Evolution_War
 {
 	public class PlayerController : Controller
 	{
-		public override void Loop(MovingObject pShip, World pWorld)
+		public override void Loop(MovingObject pShip)
 		{
 			InputStates.Up = InputStates.GetKey(Keys.Up);
 			InputStates.Down = InputStates.GetKey(Keys.Down);

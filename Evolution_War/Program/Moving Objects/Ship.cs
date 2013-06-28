@@ -13,36 +13,40 @@ namespace Evolution_War
 {
 	public class Ship : MovingObject
 	{
-		public Upgrades Upgrades { get; protected set; }
+		public UpgradeGroup UpgradeGroup { get; protected set; }
 		public Int32 AvailableUpgradePoints = 0;
 		protected Cannon cannon;
 
-		public Ship(SceneManager pSceneManager, Controller pController, String pPrefix = "Ship ")
+		public Ship(SceneManager pSceneManager, Controller pController)
 			: base(pController)
 		{
-			var name = pPrefix + Methods.GenerateUniqueID();
+			var name = Methods.GenerateUniqueID.ToString();
 
 			Node = pSceneManager.RootSceneNode.CreateChildSceneNode(name);
 			MeshNode = Node.CreateChildSceneNode();
 			MeshNode.Orientation = new Quaternion(0.5, 0.5, -0.5, -0.5);
 			MeshNode.AttachObject(pSceneManager.CreateEntity(name, "ship_assault_1.mesh"));
 
-			Upgrades = new Upgrades();
-			Upgrades.CannonAutoFire.Level = 5;
-			Upgrades.CannonMultiFire.Level = 2;
-			Upgrades.CannonSpeed.Level = 4;
+			UpgradeGroup = new UpgradeGroup
+			{
+				CannonAutoFire = { Level = 10 },
+				CannonMultiFire = { Level = 10 },
+				CannonSpeed = { Level = 5 }
+			};
 
 			cannon = new Cannon(this);
-			Upgrades.UpgradeCannon(ref cannon, Upgrades);
+			UpgradeGroup.UpgradeCannon(ref cannon, UpgradeGroup);
 		}
 
-		protected override void LoopControlPhysics(World pWorld)
+		protected override void LoopControlPhysics()
 		{
-			base.LoopControlPhysics(pWorld);
+			base.LoopControlPhysics();
 
-			if (controller.InputStates.Fire) cannon.TryShoot(pWorld);
-			if (controller.InputStates.DeltaSecondary) pWorld.HUD.AddPoints();
-			if (controller.InputStates.DeltaUpgrade) pWorld.HUD.PressUpgrade();
+			if (controller.InputStates.Fire) cannon.TryShoot();
+			if (controller.InputStates.DeltaSecondary) World.Instance.HUD.AddPoints();
+			if (controller.InputStates.DeltaUpgrade) World.Instance.HUD.PressUpgrade();
+
+			cannon.ShootResiduals();
 		}
 	}
 }

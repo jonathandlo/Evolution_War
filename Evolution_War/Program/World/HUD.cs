@@ -15,12 +15,12 @@ namespace Evolution_War
 	{
 		private UpgradeHUD upgradeHUD;
 
-		public HUDManager(World pWorld, Ship pPlayerShip)
+		public HUDManager(Ship pPlayerShip)
 		{
 			var overlay = OverlayManager.Instance.Create("Overlay");
 
 			// Create HUD elements.
-			upgradeHUD = new UpgradeHUD(pWorld, pPlayerShip, overlay);
+			upgradeHUD = new UpgradeHUD(pPlayerShip, overlay);
 
 			PopulateHUDPanels();
 		}
@@ -54,13 +54,12 @@ namespace Evolution_War
 	public class UpgradeHUD
 	{
 		// MainHUD variables.
-		private World world;
 		private Ship playerShip;
 		private Overlay overlay;
 
 		// UpgradeHUD panels.
 		private Panel masterUpgradePanel;
-		private Dictionary<Int32, List<Upgrade>> upgradesByCost; // Used for displaying indicator dots.
+		private Dictionary<Int32, List<UpgradeGroup.Upgrade>> upgradesByCost; // Used for displaying indicator dots.
 		private Dictionary<Int32, List<BorderPanel>> upgradePanelsByCost; // Used for toggling colors.
 		private Dictionary<Int32, BorderPanel> costSelectorPanels; // Used for toggling colors.
 
@@ -77,15 +76,14 @@ namespace Evolution_War
 		private Int32 selectedCost;
 		private Boolean inSelectionMode;
 
-		public UpgradeHUD(World pWorld, Ship pPlayerShip, Overlay pOverlay)
+		public UpgradeHUD(Ship pPlayerShip, Overlay pOverlay)
 		{
 			// Initialize local variables.
-			world = pWorld;
 			playerShip = pPlayerShip;
 			overlay = pOverlay;
 			inSelectionMode = false;
 			selectedUpgrade = 0;
-			upgradesByCost = new Dictionary<int, List<Upgrade>>();
+			upgradesByCost = new Dictionary<int, List<UpgradeGroup.Upgrade>>();
 			upgradePanelsByCost = new Dictionary<int, List<BorderPanel>>();
 			costSelectorPanels = new Dictionary<int, BorderPanel>();
 
@@ -100,7 +98,7 @@ namespace Evolution_War
 
 			// (Re)create cost-sorted collections.
 			upgradePanelsByCost = new Dictionary<int, List<BorderPanel>>();
-			upgradesByCost = playerShip.Upgrades.GetUpgradesByCost();
+			upgradesByCost = playerShip.UpgradeGroup.GetUpgradesByCost();
 			foreach (var cost in upgradesByCost.Keys)
 				upgradePanelsByCost.Add(cost, new List<BorderPanel>());
 
@@ -127,8 +125,8 @@ namespace Evolution_War
 				indicatorPanel.BorderMaterialName = whiteMaterialName;
 				indicatorPanel.SetBorderSize(0.0005f, 0.0005f, 0.0005f, 0f);
 				indicatorPanel.Top = 0f;
-				indicatorPanel.Left = masterUpgradePanel.Width * upgradeCounter / Upgrades.NumberOfUpgrades + 0.006f;
-				indicatorPanel.Width = masterUpgradePanel.Width * list.Value.Count / Upgrades.NumberOfUpgrades - 0.012f;
+				indicatorPanel.Left = masterUpgradePanel.Width * upgradeCounter / UpgradeGroup.NumberOfUpgrades + 0.006f;
+				indicatorPanel.Width = masterUpgradePanel.Width * list.Value.Count / UpgradeGroup.NumberOfUpgrades - 0.012f;
 				indicatorPanel.Height = 0.015f;
 				indicatorPanel.IsVisible = false;
 				masterUpgradePanel.AddChild(indicatorPanel);
@@ -160,8 +158,8 @@ namespace Evolution_War
 					panel.BorderMaterialName = whiteMaterialName;
 					panel.SetBorderSize(0.0005f, 0.0005f, 0.0005f, 0.004f);
 					panel.Top = 0.02f;
-					panel.Left = masterUpgradePanel.Width * upgradeCounter / Upgrades.NumberOfUpgrades + 0.002f;
-					panel.Width = masterUpgradePanel.Width / Upgrades.NumberOfUpgrades - 0.004f;
+					panel.Left = masterUpgradePanel.Width * upgradeCounter / UpgradeGroup.NumberOfUpgrades + 0.002f;
+					panel.Width = masterUpgradePanel.Width / UpgradeGroup.NumberOfUpgrades - 0.004f;
 					panel.Height = masterUpgradePanel.Height - 0.04f;
 					masterUpgradePanel.AddChild(panel);
 					upgradePanelsByCost[list.Key].Add(panel);
@@ -234,7 +232,7 @@ namespace Evolution_War
 
 		public void Loop()
 		{
-			if (!inSelectionMode || (world.FrameCount - lastRotationFrame <= rotationDelay)) return; // Check if it's time to switch highlighted upgrade.
+			if (!inSelectionMode || (World.Instance.FrameCount - lastRotationFrame <= rotationDelay)) return; // Check if it's time to switch highlighted upgrade.
 
 			if (selectedUpgrade < upgradesByCost[selectedCost].Count - 1)
 			{
@@ -255,7 +253,7 @@ namespace Evolution_War
 		{
 			inSelectionMode = true;
 			selectedUpgrade = 0;
-			lastRotationFrame = world.FrameCount;
+			lastRotationFrame = World.Instance.FrameCount;
 
 			// Update visuals.
 			costSelectorPanels[selectedCost].SetBorderSize(0.0005f, 0.0005f, 0.004f, 0f);

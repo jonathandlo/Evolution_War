@@ -9,11 +9,12 @@ namespace Evolution_War
 	{
 		public Ship Owner { get; private set; }
 
-		public Gun(Ship pOwner)
+		protected Gun(Ship pOwner)
 		{
 			Owner = pOwner;
 		}
 
-		public abstract void TryShoot(World pWorld);
+		public abstract void TryShoot();
+		public abstract void ShootResiduals();
 	}
 }

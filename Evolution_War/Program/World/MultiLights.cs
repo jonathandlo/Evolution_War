@@ -83,7 +83,7 @@ namespace Evolution_War
 			}
 		}
 
-		public void Loop(World pWorld)
+		public void Loop()
 		{
 			baseCamLightAngle += 0.4 - (baseCamLightAngle > 360 ? 360 : 0);
 			playerLight.Diffuse = PlayerLightColor;

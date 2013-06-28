@@ -30,8 +30,7 @@ namespace Evolution_War
 		private Double ticksToMilliFactor;
 		private Double ticksToPhysicsStepPercentFactor;
 
-		// Game World.
-		public World World { get; private set; }
+		// Lights, Camera.
 		private SmoothCamera camera;
 		private Light sunlight;
 
@@ -74,7 +73,7 @@ namespace Evolution_War
 			{
 				font.Type = FontType.TrueType;
 				font.Source = "Candarab.ttf";
-				font.TrueTypeSize = 28;
+				font.TrueTypeSize = 36;
 				font.TrueTypeResolution = 96;
 				font.AntialiasColor = false;
 				font.Load();
@@ -96,17 +95,18 @@ namespace Evolution_War
 			lastPhysicsStepTicks = 0.0;
 
 			// Create the World.
-			World = new World(sceneManager);
-			World.Arena = new Arena(sceneManager, 500, 4);
+			World.Instance = new World(sceneManager);
+			World.Instance.Initialize();
+			World.Instance.Arena = new Arena(sceneManager, 500, 4);
 
 			// Create a AI Ships.
-			for (var i = 0; i < 2; i++)
+			for (var i = 0; i < 36; i++)
 			{
-				World.AddShip(new Ship(sceneManager, new FollowController(i == 0 ? World.PlayerShip : World.Ships[i - 1])));
+				World.Instance.AddShip(new Ship(sceneManager, new RandomController()));
 			}
 
 			// Camera.
-			camera = new SmoothCamera("Camera", sceneManager, World.PlayerShip, 6);
+			camera = new SmoothCamera("Camera", sceneManager, World.Instance.PlayerShip, 6);
 
 			// Lighting.
 			sunlight = sceneManager.CreateLight("Sunlight");
@@ -131,8 +131,6 @@ namespace Evolution_War
 			root.StartRendering();
 		}
 
-		//private int counter = 0;
-
 		private void RootFrameRenderingQueued(object source, FrameEventArgs e) // Gameloop, called during every render. CPU is free during render.
 		{
 			var ticksAhead = stopwatch.ElapsedTicks - lastPhysicsStepTicks; // ticksAhead goes from 0 to PhysicsDelayTicks.
@@ -141,18 +139,15 @@ namespace Evolution_War
 			{
 				lastPhysicsStepTicks += physicsDelayTicks;
 				ticksAhead -= physicsDelayTicks;
-				//counter = 0;
 
-				World.Loop();
-				camera.Loop(World);
+				World.Instance.Loop();
+				camera.Loop();
 			}
 
 			var percent = ticksAhead * ticksToPhysicsStepPercentFactor;
-			//counter++;
-			//Debug.WriteLine((Int32)root.CurrentFPS + "  |  " + counter + "  |  " + percent);
 
-			// continue to draw as fast as possible.
-			World.Draw(percent);
+			// Continue to draw as fast as possible.
+			World.Instance.Draw(percent);
 			camera.Draw(percent);
 		}
 

@@ -15,8 +15,5 @@
     <copyright>Copyright 2013</copyright>
     <language />
     <tags>SlimDX</tags>
-    <references>
-      <reference file="SlimDX.dll" />
-    </references>
   </metadata>
 </package>

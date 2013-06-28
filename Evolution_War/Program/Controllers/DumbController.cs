@@ -2,7 +2,7 @@
 {
 	public class DumbController : Controller
 	{
-		public override void Loop(MovingObject pShip, World pWorld)
+		public override void Loop(MovingObject pShip)
 		{
 			// no input.
 		}

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Evolution_War
 {
@@ -11,30 +12,43 @@ namespace Evolution_War
 		public Int32 HomingAngle = 0;
 
 		protected Int64 basicShotAvailableFrame = 0;
+		protected List<Bullet> FireQueue;
+		protected List<Int32> GunIndexQueue; 
 
 		public Cannon(Ship pOwner)
 			: base(pOwner)
 		{
+			FireQueue = new List<Bullet>(16);
+			GunIndexQueue = new List<Int32>(16);
 		}
 
-		public override void TryShoot(World pWorld)
+		public override void ShootResiduals()
 		{
-			if (pWorld.FrameCount < basicShotAvailableFrame) return;
+			for (var i = FireQueue.Count / 5 + Math.Min(1, FireQueue.Count); i != 0; i--)
+			{
+				FireQueue[0].SetLaunchParameters(Owner.Position, Owner.Velocity,
+					Owner.Angle + Math.Cos(16 * Owner.AngleVelocity * Constants.DegreesToRadians) * Constants.MultiFireAngles[Owner.UpgradeGroup.CannonMultiFire.Level][GunIndexQueue[0]],
+					Constants.MultiFireOffsets[Owner.UpgradeGroup.CannonMultiFire.Level][GunIndexQueue[0]], // offset from starting position
+					Speed);
 
-			basicShotAvailableFrame = pWorld.FrameCount + Delay;
+				World.Instance.AddBullet(FireQueue[0]);
+				FireQueue.RemoveAt(0);
+				GunIndexQueue.RemoveAt(0);
+			}
+		}
+
+		public override void TryShoot()
+		{
+			if (World.Instance.FrameCount < basicShotAvailableFrame) return;
+
+			basicShotAvailableFrame = World.Instance.FrameCount + Delay;
 
 			for (var i = 0; i < MultiGuns; i++)
 			{
-				var bullet = RecycleFactory.NewBullet(pWorld.SceneManager, new FollowController(Owner), this);
-				bullet.Launch(
-					Owner.Position.x,
-					Owner.Position.y,
-					Owner.Velocity.x,
-					Owner.Velocity.y,
-					Owner.Angle + Math.Cos(8 * Owner.AngleVelocity * Constants.DegreesToRadians) * Constants.MultiFireAngles[Owner.Upgrades.CannonMultiFire.Level][i],
-					Math.Cos(8 * Constants.DegreesToRadians) * Constants.MultiFireOffsets[Owner.Upgrades.CannonMultiFire.Level][i], // offset from starting position
-					Speed);
-				pWorld.AddBullet(bullet);
+				var bullet = RecycleFactory.NewBullet(new DumbController(), this);
+				var insertindex = Methods.Random.Next(FireQueue.Count);
+				FireQueue.Insert(insertindex, bullet);
+				GunIndexQueue.Insert(insertindex, i);
 			}
 		}
 	}
