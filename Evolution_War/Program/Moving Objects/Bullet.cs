@@ -8,40 +8,46 @@ namespace Evolution_War
 {
 	public class Bullet : MovingObject
 	{
+		// Link to other objects.
 		public Gun OwnerGun;
+		protected Entity bulletMesh;
 		protected Trail trail;
 
-		protected const Int32 expirationFrames = 2000;
+		// Visuals.
+		protected Int32 expirationFrames = 20;
+		protected Int32 colorIndex;
+
+		// Expiration.
 		protected Int32 framesAlive = 0;
 
-		public Bullet(Controller pController, Gun pOwnerGun)
+		public Bullet(Controller pController, Gun pOwnerGun, Int32 pColorIndex)
 			: base(pController)
 		{
 			var bulletname = Methods.GenerateUniqueID.ToString();
-
-			var bullet = World.Instance.SceneManager.CreateEntity(bulletname, "bullet.mesh");
-			bullet.MaterialName = "White80";
 
 			Node = World.Instance.SceneManager.RootSceneNode.CreateChildSceneNode(bulletname);
 			Node.IsVisible = false;
 			MeshNode = Node.CreateChildSceneNode();
 			MeshNode.Scale = new Vector3(0.3, 0.3, 0.3);
-			MeshNode.AttachObject(bullet);
+			bulletMesh = World.Instance.SceneManager.CreateEntity(bulletname, "bullet.mesh");
+			MeshNode.AttachObject(bulletMesh);
 
-			Reinitialize(pController, pOwnerGun);
+			Reinitialize(pController, pOwnerGun, pColorIndex);
 		}
 
-		public void Reinitialize(Controller pController, Gun pOwnerGun) // used by Factory to recycle Bullet objects.
+		public void Reinitialize(Controller pController, Gun pOwnerGun, Int32 pColorIndex) // used by Factory to recycle Bullet objects.
 		{
 			controller = pController;
 			OwnerGun = pOwnerGun;
+			colorIndex = pColorIndex;
 			framesAlive = 0;
+			bulletMesh.MaterialName = Constants.DamageMaterialNames[pColorIndex];
 		}
 
 		public void CreateTrail()
 		{
 			// bullet trail.
-			trail = RecycleFactory.NewTrail(this, 1);
+			trail = RecycleFactory.NewTrail(this, 0.8f, Constants.DamageColors[colorIndex]);
 			World.Instance.AddTrail(trail);
 		}
 

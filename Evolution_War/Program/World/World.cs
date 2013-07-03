@@ -24,16 +24,16 @@ namespace Evolution_War
 
 		public World(SceneManager pSceneManager)
 		{
-			PlayerShip = new Ship(pSceneManager, new PlayerController());
 			SceneManager = pSceneManager;
 			Ships = new List<Ship>(48);
 			Bullets = new List<Bullet>(256);
 			Trails = new List<Trail>(256);
-			HUD = new HUDManager(PlayerShip);
 		}
 
 		public void Initialize()
 		{
+			PlayerShip = new Ship(SceneManager, new PlayerController());
+			HUD = new HUDManager(PlayerShip);
 		}
 
 		public void Loop()

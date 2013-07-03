@@ -45,7 +45,7 @@ namespace Evolution_War
 
 			for (var i = 0; i < MultiGuns; i++)
 			{
-				var bullet = RecycleFactory.NewBullet(new DumbController(), this);
+				var bullet = RecycleFactory.NewBullet(new DumbController(), this, Owner.UpgradeGroup.CannonPower.Level);
 				var insertindex = Methods.Random.Next(FireQueue.Count);
 				FireQueue.Insert(insertindex, bullet);
 				GunIndexQueue.Insert(insertindex, i);

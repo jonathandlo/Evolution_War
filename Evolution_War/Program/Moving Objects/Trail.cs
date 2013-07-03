@@ -15,34 +15,41 @@ namespace Evolution_War
 		public LoopResultStates LoopResultStates { get; private set; }
 		protected MovingObject objectToFollow;
 
-		// variables to manage the billboardchain
+		// BillboardChain management.
 		public BillboardChain Chain { get; protected set; }
-		protected int count, deadcountdown;
+		protected Vector3 deadPosition;
+		protected int deadcountdown;
 		protected bool stopping;
 
-		// visual parameters
-		protected Single maxwidth;
+		protected List<BillboardChain.Element> elementz = new List<BillboardChain.Element>();
 
-		public Trail(MovingObject pObjectToFollow, Single pMaxWidth)
+		// Visuals.
+		protected Single maxwidth;
+		protected ColorEx color;
+
+		public Trail(MovingObject pObjectToFollow, Single pMaxWidth, ColorEx pColor)
 		{
 			LoopResultStates = new LoopResultStates();
 
 			Chain = new BillboardChain(Methods.GenerateUniqueID.ToString());
 			Chain.Material.SetSceneBlending(SceneBlendType.Replace);
+			Chain.Material.DepthCheck = false;
+			Chain.Material.DepthWrite = false;
 			Chain.NumberOfChains = 1;
 			Chain.IsVisible = false;
 			World.Instance.SceneManager.RootSceneNode.AttachObject(Chain);
 
-			Relaunch(pObjectToFollow, pMaxWidth);
+			Relaunch(pObjectToFollow, pMaxWidth, pColor);
 		}
 
-		public void Relaunch(MovingObject pObjectToFollow, Single pMaxWidth)
+		public void Relaunch(MovingObject pObjectToFollow, Single pMaxWidth, ColorEx pColor)
 		{
 			objectToFollow = pObjectToFollow;
 			maxwidth = pMaxWidth;
+			color = pColor;
 			stopping = false;
-			count = 0;
-			deadcountdown = Chain.MaxChainElements = 6;
+			elementz.Clear();
+			deadcountdown = Chain.MaxChainElements = 7;
 
 			DropTrail();
 		}
@@ -51,23 +58,14 @@ namespace Evolution_War
 		{
 			if (!stopping)
 			{
-				var oldelement = Chain.GetChainElement(0, 0);
+				var oldelement = elementz[elementz.Count - 1];
 				oldelement.Position = objectToFollow.Node.Position;
-				oldelement.Width = (float)pPercent * maxwidth;
 			}
 		}
 
 		public void Loop()
 		{
 			LoopResultStates.Clear();
-
-			for (var i = 0; i < count; i++)
-			{
-				var element = Chain.GetChainElement(0, i);
-
-				element.Width *= 0.8f;
-				element.Color *= 0.8f;
-			}
 
 			if (stopping) // allow decay.
 			{
@@ -82,79 +80,115 @@ namespace Evolution_War
 			{
 				DropTrail();
 			}
+
+			for (var i = 0; i < elementz.Count; i++)
+			{
+				var element = elementz[i];
+
+				if (i == 0 || i < elementz.Count - deadcountdown)
+				{
+					// hide if stopping
+					element.Width = 0;
+					element.Color = ColorEx.Black;
+				}
+				else
+				{
+					// regular decay.
+					element.Width *= 0.9f;
+					element.Color *= 0.8f;
+				}
+			}
 		}
 
 		private void DropTrail()
 		{
-			var oldelement = Chain.GetChainElement(0, 0);
-			oldelement.Position = objectToFollow.OldPosition;
-			oldelement.Color = new ColorEx((Single)Methods.Random.NextDouble(), (Single)Methods.Random.NextDouble(), (Single)Methods.Random.NextDouble());
-			oldelement.Width = maxwidth;
-			
-			Chain.AddChainElement(0, new BillboardChain.Element(objectToFollow.OldPosition, 0, 1, new ColorEx(1.0f, 1.0f, 1.0f)));
-			count++;
+			if (elementz.Count > 0)
+			{
+				// set old element.
+				var oldelement = elementz[elementz.Count - 1];
+				oldelement.Position = objectToFollow.OldPosition;
+				oldelement.Color = color;
+			}
+
+			// add new element.
+			var newelement = new BillboardChain.Element();
+			newelement.Position = objectToFollow.OldPosition;
+			newelement.Width = maxwidth;
+			newelement.Color = ColorEx.White;
+
+			Chain.AddChainElement(0, newelement);
+			elementz.Add(newelement);
+
+			if (elementz.Count > Chain.MaxChainElements)
+			{
+				elementz.RemoveAt(0);
+			}
 		}
 
 		public void ObjectToFollowDisappeared()
 		{
 			// stop creating.
 			stopping = true;
-			deadcountdown = Math.Min(count, Chain.MaxChainElements);
+			deadcountdown = Math.Min(elementz.Count, Chain.MaxChainElements);
+			deadPosition = objectToFollow.Position;
+
+			if (elementz.Count != 0) elementz[elementz.Count - 1].Color = color;
 		}
 
 		public void Recycle()
 		{
 			Chain.IsVisible = false;
+			elementz.Clear();
 		}
 	}
 
-//	public class CustomBillboardChain : BillboardChain
-//	{
-//		public CustomBillboardChain(string name, int maxElements, int numberOfChains, bool useTextureCoords, bool useColors, bool dynamic) : base(name, maxElements, numberOfChains, useTextureCoords, useColors, dynamic) { }
-//		public CustomBillboardChain(string name, int maxElements, int numberOfChains, bool useTextureCoords, bool useColors) : base(name, maxElements, numberOfChains, useTextureCoords, useColors) { }
-//		public CustomBillboardChain(string name, int maxElements, int numberOfChains, bool useTextureCoords) : base(name, maxElements, numberOfChains, useTextureCoords) { }
-//		public CustomBillboardChain(string name, int maxElements, int numberOfChains) : base(name, maxElements, numberOfChains) { }
-//		public CustomBillboardChain(string name, int maxElements) : base(name, maxElements) { }
-//		public CustomBillboardChain(string name) : base(name) { }
-//
-//		public void ClearChain(int chainIndex)
-//		{
-//			if (chainIndex >= chainCount)
-//			{
-//				throw new Exception("ERR_ITEM_NOT_FOUND : chainIndex out of bounds : BillboardChain.ClearChain");
-//			}
-//			var seg = chainSegmentList[chainIndex];
-//
-//			// Just reset head & tail
-//			seg.tail = seg.head = SEGMENT_EMPTY;
-//
-//			// we removed an entry so indexes need updating
-//			vertexDeclDirty = true;
-//			indexContentDirty = true;
-//			boundsDirty = true;
-//			// tell parent node to update bounds
-//			if (parentNode != null)
-//				parentNode.NeedUpdate();
-//
-//			SetupChainContainers();
-//		}
-//
-//		public void ClearAllChains()
-//		{
-//			for (var i = 0; i < chainCount; ++i)
-//			{
-//				ClearChain(i);
-//			}
-//		}
-//
-//		public ChainSegment GetChainSegment(int pChainIndex)
-//		{
-//			return chainSegmentList[pChainIndex];
-//		}
-//
-//		public List<Element> GetChainElements()
-//		{
-//			return chainElementList;
-//		}
-//	}
+	//	public class CustomBillboardChain : BillboardChain
+	//	{
+	//		public CustomBillboardChain(string name, int maxElements, int numberOfChains, bool useTextureCoords, bool useColors, bool dynamic) : base(name, maxElements, numberOfChains, useTextureCoords, useColors, dynamic) { }
+	//		public CustomBillboardChain(string name, int maxElements, int numberOfChains, bool useTextureCoords, bool useColors) : base(name, maxElements, numberOfChains, useTextureCoords, useColors) { }
+	//		public CustomBillboardChain(string name, int maxElements, int numberOfChains, bool useTextureCoords) : base(name, maxElements, numberOfChains, useTextureCoords) { }
+	//		public CustomBillboardChain(string name, int maxElements, int numberOfChains) : base(name, maxElements, numberOfChains) { }
+	//		public CustomBillboardChain(string name, int maxElements) : base(name, maxElements) { }
+	//		public CustomBillboardChain(string name) : base(name) { }
+	//
+	//		public void ClearChain(int chainIndex)
+	//		{
+	//			if (chainIndex >= chainCount)
+	//			{
+	//				throw new Exception("ERR_ITEM_NOT_FOUND : chainIndex out of bounds : BillboardChain.ClearChain");
+	//			}
+	//			var seg = chainSegmentList[chainIndex];
+	//
+	//			// Just reset head & tail
+	//			seg.tail = seg.head = SEGMENT_EMPTY;
+	//
+	//			// we removed an entry so indexes need updating
+	//			vertexDeclDirty = true;
+	//			indexContentDirty = true;
+	//			boundsDirty = true;
+	//			// tell parent node to update bounds
+	//			if (parentNode != null)
+	//				parentNode.NeedUpdate();
+	//
+	//			SetupChainContainers();
+	//		}
+	//
+	//		public void ClearAllChains()
+	//		{
+	//			for (var i = 0; i < chainCount; ++i)
+	//			{
+	//				ClearChain(i);
+	//			}
+	//		}
+	//
+	//		public ChainSegment GetChainSegment(int pChainIndex)
+	//		{
+	//			return chainSegmentList[pChainIndex];
+	//		}
+	//
+	//		public List<Element> GetChainElements()
+	//		{
+	//			return chainElementList;
+	//		}
+	//	}
 }

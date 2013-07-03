@@ -31,7 +31,8 @@ namespace Evolution_War
 			{
 				CannonAutoFire = { Level = 10 },
 				CannonMultiFire = { Level = 10 },
-				CannonSpeed = { Level = 5 }
+				CannonSpeed = { Level = 7 },
+				CannonPower = { Level = 5 }
 			};
 
 			cannon = new Cannon(this);

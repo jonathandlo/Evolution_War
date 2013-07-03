@@ -63,6 +63,7 @@ namespace Evolution_War
 			WindowEventMonitor.Instance.RegisterListener(window, this);
 
 			// Content.
+			Constants.Load();
 			ResourceGroupManager.Instance.AddResourceLocation("Meshes", "Folder", true);
 			ResourceGroupManager.Instance.AddResourceLocation("Fonts", "Folder", true);
 			ResourceGroupManager.Instance.InitializeAllResourceGroups();
@@ -89,7 +90,7 @@ namespace Evolution_War
 			// Start the Stopwatch.
 			stopwatch = new Stopwatch();
 			stopwatch.Start();
-			physicsDelayTicks = Stopwatch.Frequency / 30.0; // 30 physics steps per second
+			physicsDelayTicks = Stopwatch.Frequency / 35.0; // 30 physics steps per second
 			ticksToMilliFactor = 1.0 / (Stopwatch.Frequency / 1000.0);
 			ticksToPhysicsStepPercentFactor = 1.0 / physicsDelayTicks;
 			lastPhysicsStepTicks = 0.0;

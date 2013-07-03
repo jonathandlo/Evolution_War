@@ -12,27 +12,27 @@ namespace Evolution_War
 		private static Queue<Bullet> freeBullets = new Queue<Bullet>(256);
 		private static Queue<Trail> freeTrails = new Queue<Trail>(256);
 
-		public static Bullet NewBullet(Controller pController, Gun pOwnerGun)
+		public static Bullet NewBullet(Controller pController, Gun pOwnerGun, Int32 pColorIndex)
 		{
 			if (freeBullets.Count == 0)
 			{
-				return new Bullet(pController, pOwnerGun);
+				return new Bullet(pController, pOwnerGun, pColorIndex);
 			}
 
 			var bullet = freeBullets.Dequeue();
-			bullet.Reinitialize(pController, pOwnerGun);
+			bullet.Reinitialize(pController, pOwnerGun, pColorIndex);
 			return bullet;
 		}
 
-		public static Trail NewTrail(MovingObject pObjectToFollow, Single pMaxWidth)
+		public static Trail NewTrail(MovingObject pObjectToFollow, Single pMaxWidth, ColorEx pColor)
 		{
 			if (freeTrails.Count == 0)
 			{
-				return new Trail(pObjectToFollow, pMaxWidth);
+				return new Trail(pObjectToFollow, pMaxWidth, pColor);
 			}
 
 			var trail = freeTrails.Dequeue();
-			trail.Relaunch(pObjectToFollow, pMaxWidth);
+			trail.Relaunch(pObjectToFollow, pMaxWidth, pColor);
 			return trail;
 		}
 
