@@ -70,6 +70,7 @@ namespace Evolution_War
 			a = oa = pAngleDegrees;
 			dx = pVelocity.x + pSpeed * Math.Cos(degreeAngle);
 			dy = pVelocity.y + pSpeed * Math.Sin(degreeAngle);
+			odx = ody = oda = 0;
 		}
 
 		protected override void LoopControlPhysics()

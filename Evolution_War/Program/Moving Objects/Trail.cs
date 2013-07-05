@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,18 +13,25 @@ namespace Evolution_War
 {
 	public class Trail
 	{
+		[Flags] protected enum TrailState
+		{
+			Growing = 1,
+			Moving = 2,
+			Stopping = 4
+		}
+
 		public LoopResultStates LoopResultStates { get; private set; }
 		protected MovingObject objectToFollow;
 
 		// BillboardChain management.
 		public BillboardChain Chain { get; protected set; }
-		protected Vector3 deadPosition;
-		protected int deadcountdown;
-		protected bool stopping;
-
-		protected List<BillboardChain.Element> elementz = new List<BillboardChain.Element>();
+		protected List<BillboardChain.Element> elementList = new List<BillboardChain.Element>();
+		protected List<Ray> elementPositions = new List<Ray>();
+		protected Vector3 finalPosition;
+		protected int elementsToDestroy;
 
 		// Visuals.
+		protected TrailState trailState;
 		protected Single maxwidth;
 		protected ColorEx color;
 
@@ -31,7 +39,7 @@ namespace Evolution_War
 		{
 			LoopResultStates = new LoopResultStates();
 
-			Chain = new BillboardChain(Methods.GenerateUniqueID.ToString());
+			Chain = new BillboardChain(Methods.GenerateUniqueID.ToString(CultureInfo.InvariantCulture));
 			Chain.Material.SetSceneBlending(SceneBlendType.Replace);
 			Chain.Material.DepthCheck = false;
 			Chain.Material.DepthWrite = false;
@@ -47,19 +55,19 @@ namespace Evolution_War
 			objectToFollow = pObjectToFollow;
 			maxwidth = pMaxWidth;
 			color = pColor;
-			stopping = false;
-			elementz.Clear();
-			deadcountdown = Chain.MaxChainElements = 7;
+			trailState = TrailState.Growing;
+			elementList.Clear();
+			elementPositions.Clear();
+			elementsToDestroy = Chain.MaxChainElements = 4;
 
-			DropTrail();
+			AddHead();
 		}
 
 		public void Draw(Double pPercent)
 		{
-			if (!stopping)
+			for (var i = 0; i < elementPositions.Count; i ++)
 			{
-				var oldelement = elementz[elementz.Count - 1];
-				oldelement.Position = objectToFollow.Node.Position;
+				elementList[i].Position = elementPositions[i].Origin + elementPositions[i].Direction * pPercent;
 			}
 		}
 
@@ -67,78 +75,100 @@ namespace Evolution_War
 		{
 			LoopResultStates.Clear();
 
-			if (stopping) // allow decay.
+			for (var i = 0; i < elementList.Count; i++)
 			{
-				deadcountdown--;
+				var element = elementList[i];
 
-				if (deadcountdown == 0) // remove completely.
+				if (i == elementList.Count - elementsToDestroy) // hide the tail elements.
 				{
-					LoopResultStates.Remove = true;
-				}
-			}
-			else // continue to follow.
-			{
-				DropTrail();
-			}
-
-			for (var i = 0; i < elementz.Count; i++)
-			{
-				var element = elementz[i];
-
-				if (i == 0 || i < elementz.Count - deadcountdown)
-				{
-					// hide if stopping
 					element.Width = 0;
 					element.Color = ColorEx.Black;
 				}
-				else
+				else // decay the visible elements.
 				{
-					// regular decay.
-					element.Width *= 0.9f;
-					element.Color *= 0.8f;
+					element.Width *= 0.65f;
+					element.Color *= 0.6f;
 				}
+			}
+
+			if (trailState == TrailState.Stopping) // allow decay.
+			{
+				elementsToDestroy--;
+
+				elementPositions[elementList.Count - 1].Origin = finalPosition;
+				elementPositions[elementList.Count - 1].Direction = Vector3.Zero;
+
+				if (elementsToDestroy == 0) // remove completely.
+					LoopResultStates.Remove = true;
+				else
+					RemoveTail();
+			}
+			else // continue to follow.
+			{
+				AddHead();
+				RemoveTail();
 			}
 		}
 
-		private void DropTrail()
+		private void AddHead()
 		{
-			if (elementz.Count > 0)
+			Vector3 newheadvelocity;
+
+			if (elementList.Count > 0) // set old head element color.
 			{
-				// set old element.
-				var oldelement = elementz[elementz.Count - 1];
-				oldelement.Position = objectToFollow.OldPosition;
-				oldelement.Color = color;
+				var oldeadelement = elementList[elementList.Count - 1];
+				oldeadelement.Color = color;
+				newheadvelocity = objectToFollow.Velocity;
+			}
+			else
+			{
+				newheadvelocity = Vector3.Zero;
 			}
 
-			// add new element.
+			// add new white head element.
 			var newelement = new BillboardChain.Element();
 			newelement.Position = objectToFollow.OldPosition;
 			newelement.Width = maxwidth;
 			newelement.Color = ColorEx.White;
 
 			Chain.AddChainElement(0, newelement);
-			elementz.Add(newelement);
+			elementList.Add(newelement);
+			elementPositions.Add(new Ray(newelement.Position, newheadvelocity));
+		}
 
-			if (elementz.Count > Chain.MaxChainElements)
+		private void RemoveTail()
+		{
+			if (trailState == TrailState.Growing)
 			{
-				elementz.RemoveAt(0);
+				if (elementList.Count == Chain.MaxChainElements) // check if our state is advancing.
+				{
+					trailState = TrailState.Moving;
+				}
+			}
+			else // trail will exceed max length, record information of new tail.
+			{
+				elementList.RemoveAt(0);
+				elementPositions.RemoveAt(0);
 			}
 		}
 
 		public void ObjectToFollowDisappeared()
 		{
 			// stop creating.
-			stopping = true;
-			deadcountdown = Math.Min(elementz.Count, Chain.MaxChainElements);
-			deadPosition = objectToFollow.Position;
+			trailState = TrailState.Stopping;
+			elementsToDestroy = Math.Min(elementList.Count, Chain.MaxChainElements);
+			finalPosition = objectToFollow.OldPosition;
 
-			if (elementz.Count != 0) elementz[elementz.Count - 1].Color = color;
+			if (elementList.Count != 0)
+			{
+				elementList[elementList.Count - 1].Color = color;
+			}
 		}
 
 		public void Recycle()
 		{
 			Chain.IsVisible = false;
-			elementz.Clear();
+			elementList.Clear();
 		}
 	}
 
